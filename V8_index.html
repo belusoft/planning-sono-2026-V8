@@ -1,0 +1,3248 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1A2B5E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Planning Sono">
+<meta name="description" content="Planning Sono & Accueil — Congrégation 2026">
+<title>Planning Sono & Accueil — V8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lato:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════════
+   VARIABLES & RESET
+══════════════════════════════════════════════ */
+:root {
+  --primary: #1A2B5E;
+  --primary-l: #2D4099;
+  --primary-ll: #E8ECFA;
+  --accent: #F2A20C;
+  --accent-l: #FFF3D4;
+  --success: #06B86D;
+  --success-l: #D4F7EA;
+  --danger: #E53E3E;
+  --danger-l: #FFE5E5;
+  --warn: #F6AD55;
+  --warn-l: #FFF3E0;
+  --bg: #F2F5FC;
+  --surface: #FFFFFF;
+  --surface2: #F8FAFF;
+  --border: #E0E6F5;
+  --text: #1A2B5E;
+  --text-s: #5C6898;
+  --text-xs: #9BA8D0;
+  --radius: 14px;
+  --radius-s: 8px;
+  --shadow: 0 2px 12px rgba(26,43,94,.09);
+  --shadow-m: 0 4px 24px rgba(26,43,94,.14);
+  --shadow-l: 0 8px 40px rgba(26,43,94,.18);
+  --nav-h: 68px;
+  --header-h: 60px;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --font-b: 'Lato', sans-serif;
+}
+[data-theme="dark"] {
+  --bg: #0B0F1E;
+  --surface: #131829;
+  --surface2: #1A2038;
+  --border: #252D4F;
+  --text: #E8ECFA;
+  --text-s: #8B97C8;
+  --text-xs: #4D5A8A;
+  --primary-ll: #1A2038;
+  --accent-l: #2A2010;
+  --success-l: #0B2A1E;
+  --danger-l: #2A0F0F;
+  --warn-l: #2A1E0A;
+  --shadow: 0 2px 12px rgba(0,0,0,.3);
+  --shadow-m: 0 4px 24px rgba(0,0,0,.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;transition:background .3s,color .3s}
+/* Fix iOS Safari 100vh */
+:root { --app-height: 100vh; }
+button{cursor:pointer;font-family:var(--font);border:none;outline:none}
+input,select,textarea{font-family:var(--font);outline:none;border:none}
+a{color:var(--primary-l);text-decoration:none}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ══════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════ */
+#app {
+  display:flex;flex-direction:column;height:100vh;height:var(--app-height);max-width:480px;
+  margin:0 auto;position:relative;overflow:hidden;
+  box-shadow:0 0 60px rgba(0,0,0,.2);
+}
+#header {
+  height:var(--header-h);display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;background:var(--primary);color:#fff;flex-shrink:0;
+  position:relative;z-index:10;
+}
+#header h1{font-size:15px;font-weight:700;letter-spacing:.5px;line-height:1.2}
+#header small{font-size:11px;font-weight:300;opacity:.7;display:block}
+.header-actions{display:flex;gap:8px;align-items:center}
+.icon-btn{
+  width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  background:rgba(255,255,255,.15);transition:.2s;color:#fff;
+}
+.icon-btn:hover{background:rgba(255,255,255,.25)}
+
+#tabs-wrapper {
+  flex:1;overflow:hidden;position:relative;
+}
+.tab-panel{
+  position:absolute;inset:0;overflow-y:auto;padding:16px 16px calc(var(--nav-h) + 16px);
+  display:none;animation:fadeIn .25s ease;
+}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* BOTTOM NAV */
+#bottom-nav{
+  position:absolute;bottom:0;left:0;right:0;height:var(--nav-h);
+  display:flex;background:var(--surface);border-top:1px solid var(--border);
+  z-index:10;
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;font-size:10px;font-weight:600;letter-spacing:.3px;
+  color:var(--text-xs);background:none;border:none;cursor:pointer;
+  transition:.2s;padding:6px 0;
+}
+.nav-btn .nav-icon{font-size:20px;transition:transform .2s}
+.nav-btn.active{color:var(--primary-l)}
+.nav-btn.active .nav-icon{transform:translateY(-2px)}
+[data-theme="dark"] .nav-btn.active{color:var(--accent)}
+
+/* ══════════════════════════════════════════════
+   COMPONENTS
+══════════════════════════════════════════════ */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+.card-title{font-size:13px;font-weight:700;color:var(--text-s);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+
+.badge{
+  display:inline-flex;align-items:center;gap:4px;padding:3px 9px;
+  border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;
+}
+.badge-blue{background:var(--primary-ll);color:var(--primary-l)}
+.badge-green{background:var(--success-l);color:var(--success)}
+.badge-red{background:var(--danger-l);color:var(--danger)}
+.badge-gold{background:var(--accent-l);color:#C47D00}
+.badge-warn{background:var(--warn-l);color:#B45309}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 18px;border-radius:var(--radius-s);font-size:14px;font-weight:600;
+  cursor:pointer;transition:.2s;border:none;
+}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-l)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:#D4880A}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--primary-l);color:var(--primary-l)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-full{width:100%}
+
+.input-field{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);
+  border-radius:var(--radius-s);font-size:14px;background:var(--surface);
+  color:var(--text);transition:.2s;
+}
+.input-field:focus{border-color:var(--primary-l)}
+.label{font-size:12px;font-weight:600;color:var(--text-s);margin-bottom:4px;display:block}
+.form-group{margin-bottom:12px}
+
+/* SYNC STATUS */
+#sync-bar{
+  display:flex;align-items:center;gap:8px;padding:8px 14px;
+  border-radius:var(--radius-s);font-size:12px;font-weight:600;margin-bottom:12px;
+}
+.sync-ok{background:var(--success-l);color:var(--success)}
+.sync-err{background:var(--danger-l);color:var(--danger)}
+.sync-loading{background:var(--primary-ll);color:var(--primary-l)}
+.sync-none{background:var(--surface2);color:var(--text-s)}
+
+/* MEMBER CHIP */
+.member-chip{
+  display:inline-flex;align-items:center;gap:6px;padding:4px 10px;
+  background:var(--primary-ll);color:var(--primary);border-radius:20px;
+  font-size:12px;font-weight:600;
+}
+
+/* PLANNING GRID */
+.planning-month{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px}
+.planning-year{font-size:13px;color:var(--text-s);margin-bottom:16px}
+.service-card{
+  border-left:4px solid var(--primary);padding:12px 14px;
+  background:var(--surface);border-radius:0 var(--radius-s) var(--radius-s) 0;
+  margin-bottom:10px;box-shadow:var(--shadow);
+}
+.service-card.samedi{border-left-color:var(--accent)}
+.service-card.absent-flag{border-left-color:var(--danger)}
+.service-date{font-size:13px;font-weight:700;color:var(--text)}
+.service-type{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--text-s);margin-bottom:8px}
+.role-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:13px}
+.role-row:last-child{border-bottom:none}
+.role-name{color:var(--text-s);font-weight:500;font-size:12px}
+.role-assigned{font-weight:600;color:var(--text)}
+.role-empty{color:var(--text-xs);font-style:italic;font-size:12px}
+
+/* DISPO IFRAME */
+#dispo-form-iframe{
+  height: calc(var(--app-height) - var(--header-h) - var(--nav-h) - 160px);
+  min-height: 400px;
+}
+
+/* DISPO TOGGLE */
+.dispo-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-bottom:1px solid var(--border);
+}
+.dispo-item:last-child{border-bottom:none}
+.dispo-date{font-size:14px;font-weight:600;color:var(--text)}
+.dispo-day{font-size:12px;color:var(--text-s)}
+.toggle{
+  position:relative;width:52px;height:28px;border-radius:14px;
+  background:var(--border);cursor:pointer;border:none;transition:.3s;
+}
+.toggle::after{
+  content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;
+  border-radius:50%;background:#fff;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.toggle.on{background:var(--success)}
+.toggle.on::after{left:27px}
+
+/* MEMBER LIST */
+.member-row{
+  display:flex;align-items:center;gap:12px;padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.member-row:last-child{border-bottom:none}
+.member-avatar{
+  width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;
+}
+.member-info{flex:1;min-width:0}
+.member-name{font-size:14px;font-weight:700;color:var(--text)}
+.member-roles{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.member-actions{display:flex;gap:6px}
+
+/* ATTRIBUTION */
+.attrib-slot{
+  display:flex;align-items:center;gap:8px;padding:10px 0;
+  border-bottom:1px solid var(--border);flex-wrap:wrap;
+}
+.attrib-slot:last-child{border-bottom:none}
+.attrib-slot.conflict{background:var(--danger-l);border-radius:var(--radius-s);padding:10px 8px;margin:2px 0;border-bottom:none;border-left:3px solid var(--danger)}
+.attrib-role{flex:0 0 140px;font-size:12px;font-weight:600;color:var(--text-s)}
+.attrib-select{
+  flex:1;padding:7px 10px;border-radius:var(--radius-s);border:1.5px solid var(--border);
+  font-size:13px;background:var(--surface);color:var(--text);
+}
+.attrib-select:focus{border-color:var(--primary-l)}
+.attrib-select.conflict-select{border-color:var(--danger);background:var(--danger-l)}
+.conflict-badge{font-size:11px;color:var(--danger);font-weight:700;width:100%;padding-left:148px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.replace-btn{font-size:11px;background:var(--success);color:#fff;border:none;border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.replace-btn:hover{opacity:.85}
+.conflict-banner{background:var(--danger-l);border:1.5px solid var(--danger);border-radius:var(--radius-s);padding:10px 12px;margin-bottom:10px;font-size:13px;color:var(--danger);font-weight:600;display:none}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-card{background:var(--surface2);border-radius:var(--radius-s);padding:10px 12px;text-align:center}
+.stat-card .num{font-size:22px;font-weight:800;color:var(--primary)}
+.stat-card .lbl{font-size:11px;color:var(--text-xs);margin-top:2px}
+.member-stat-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:13px}
+.member-stat-row:last-child{border-bottom:none}
+.stat-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.stat-bar-fill{height:100%;background:var(--primary-l);border-radius:3px;transition:width .4s}
+
+/* VUE HEBDOMADAIRE */
+.week-view{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.week-col{background:var(--surface2);border-radius:var(--radius);padding:10px;border:1px solid var(--border)}
+.week-col-title{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--primary-l)}
+.week-role-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:11px;border-bottom:0.5px solid var(--border)}
+.week-role-row:last-child{border-bottom:none}
+.week-role-name{color:var(--text-s);flex:1}
+.week-member-name{font-weight:700;color:var(--text);font-size:11px}
+.week-empty{color:var(--text-xs);font-style:italic}
+.view-toggle{display:flex;gap:6px;margin-bottom:12px}
+.view-btn{flex:1;padding:7px;border-radius:var(--radius-s);border:1.5px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;color:var(--text-s);cursor:pointer;transition:.15s}
+.view-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+/* ATTRIBUTION AMELIOREE */
+.attrib-filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.role-filter-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text-s);cursor:pointer;white-space:nowrap;transition:.15s}
+.role-filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.dispo-tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:700;margin-left:4px}
+.dispo-ok{background:var(--success-l);color:var(--success)}
+.dispo-no{background:var(--danger-l);color:var(--danger)}
+.dispo-unk{background:var(--warn-l);color:var(--warn)}
+/* ABSENCE CARD */
+.absence-item{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--danger-l);border-radius:var(--radius-s);margin-bottom:8px;
+  border:1px solid rgba(229,62,62,.2);
+}
+.absence-name{font-weight:700;font-size:13px;color:var(--danger)}
+.absence-date{font-size:12px;color:var(--text-s)}
+
+/* NOTIFICATION BADGE */
+.notif-badge{
+  background:var(--danger);color:#fff;border-radius:50%;
+  width:18px;height:18px;font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  position:absolute;top:-4px;right:-4px;
+}
+
+/* TOAST */
+#toast{
+  position:fixed;bottom:calc(var(--nav-h) + 10px);left:50%;transform:translateX(-50%);
+  padding:10px 20px;border-radius:30px;font-size:13px;font-weight:600;
+  background:var(--primary);color:#fff;box-shadow:var(--shadow-l);
+  z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;
+}
+#toast.show{opacity:1}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:.25s;
+}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-box{
+  background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;
+  padding:20px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;
+  transform:translateY(100%);transition:.3s cubic-bezier(.34,1.56,.64,1);
+}
+.modal-overlay.open .modal-box{transform:none}
+.modal-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:16px}
+.modal-actions{display:flex;gap:8px;margin-top:16px}
+
+/* SECTION HEADER */
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;
+}
+.section-title{font-size:18px;font-weight:800;color:var(--text)}
+.section-sub{font-size:13px;color:var(--text-s);margin-bottom:16px}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:10px;margin-bottom:16px}
+.stat-box{
+  flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px;text-align:center;box-shadow:var(--shadow);
+}
+.stat-num{font-size:22px;font-weight:800;color:var(--primary)}
+.stat-label{font-size:11px;color:var(--text-s);font-weight:500}
+[data-theme="dark"] .stat-num{color:var(--accent)}
+
+/* ADMIN LOCK */
+.admin-only{display:none}
+.admin-active .admin-only{display:block}
+.admin-active .admin-hidden{display:none}
+
+/* MON PLANNING DU MOIS (non-admin) */
+.myplan-section{margin-bottom:14px}
+.myplan-select-wrap{margin-bottom:12px}
+.myplan-banner{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  background:linear-gradient(135deg,var(--primary-ll),var(--accent-l));
+  border:1.5px solid var(--primary-l);border-radius:var(--radius);margin-bottom:12px;
+}
+.myplan-banner-icon{font-size:24px}
+.myplan-banner-info{flex:1}
+.myplan-banner-name{font-size:14px;font-weight:700;color:var(--text)}
+.myplan-banner-sub{font-size:11px;color:var(--text-s);margin-top:2px}
+.myplan-service{
+  border-left:4px solid var(--primary);padding:10px 12px;
+  background:var(--surface);border-radius:0 var(--radius-s) var(--radius-s) 0;
+  margin-bottom:8px;box-shadow:var(--shadow);
+}
+.myplan-service.samedi{border-left-color:var(--accent)}
+.myplan-service .myplan-date{font-size:13px;font-weight:700;color:var(--text)}
+.myplan-service .myplan-type{font-size:11px;color:var(--text-s);margin-bottom:6px}
+.myplan-service .myplan-role{
+  display:inline-flex;align-items:center;gap:4px;padding:3px 9px;
+  border-radius:20px;font-size:11px;font-weight:700;
+  background:var(--primary-ll);color:var(--primary-l);margin-top:4px;
+}
+.myplan-empty{text-align:center;padding:30px 16px;color:var(--text-xs);font-size:13px}
+.myplan-month-divider{
+  font-size:12px;font-weight:700;color:var(--text-s);text-transform:uppercase;
+  letter-spacing:.6px;margin:14px 0 8px;padding-bottom:6px;
+  border-bottom:2px solid var(--primary-l);
+}
+/* Rappel sous semaine courante en vue hebdo */
+.week-rappel-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;padding:10px;border-radius:var(--radius-s);
+  background:var(--accent);color:#fff;font-size:13px;font-weight:700;
+  border:none;cursor:pointer;margin-top:6px;margin-bottom:10px;
+  transition:.2s;box-shadow:var(--shadow);
+}
+.week-rappel-btn:hover{background:#D4880A}
+
+/* PWA INSTALL BANNER */
+#install-banner{
+  background:linear-gradient(135deg,var(--primary),var(--primary-l));
+  color:#fff;padding:12px 16px;border-radius:var(--radius);margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;font-size:13px;
+}
+#install-banner button{
+  margin-left:auto;background:rgba(255,255,255,.2);color:#fff;
+  border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;
+}
+
+/* SEARCH INPUT */
+.search-wrap{position:relative;margin-bottom:14px}
+.search-wrap input{padding-left:36px}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text-xs)}
+
+/* ROLE COLOR DOTS */
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot-audio{background:#6C5CE7}
+.dot-video{background:#0984E3}
+.dot-perche{background:#00B894}
+.dot-estrade{background:#FDCB6E}
+.dot-accueil{background:#E17055}
+
+/* SCROLLABLE X */
+.scroll-x{overflow-x:auto;display:flex;gap:8px;padding-bottom:8px}
+.scroll-x::-webkit-scrollbar{height:0}
+.date-chip{
+  flex-shrink:0;padding:8px 14px;border-radius:30px;font-size:12px;font-weight:700;
+  background:var(--surface2);border:1.5px solid var(--border);color:var(--text-s);cursor:pointer;
+}
+.date-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* PROGRESS BAR */
+.progress-wrap{margin:8px 0}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-s);margin-bottom:4px}
+.progress-bar{height:6px;border-radius:3px;background:var(--border)}
+.progress-fill{height:100%;border-radius:3px;background:var(--success);transition:width .4s}
+
+/* ══════════════════════════════════════════════
+   PARAMETRES
+══════════════════════════════════════════════ */
+.param-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;border-bottom:1px solid var(--border);
+}
+.param-row:last-child{border-bottom:none}
+.param-info{flex:1}
+.param-label{font-size:14px;font-weight:600;color:var(--text)}
+.param-desc{font-size:12px;color:var(--text-s);margin-top:2px}
+.switch{
+  position:relative;width:44px;height:24px;flex-shrink:0;
+}
+.switch input{opacity:0;width:0;height:0}
+.switch-slider{
+  position:absolute;inset:0;background:var(--border);border-radius:12px;
+  cursor:pointer;transition:.3s;
+}
+.switch-slider::after{
+  content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;
+  background:#fff;border-radius:50%;transition:.3s;
+}
+.switch input:checked + .switch-slider{background:var(--success)}
+.switch input:checked + .switch-slider::after{transform:translateX(20px)}
+
+/* ── DISPONIBILITÉS NATIVES — Logique indisponibilités ── */
+.dispo-intro{background:var(--success-l);border:1.5px solid var(--success);
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;font-size:13px;color:var(--text)}
+.dispo-intro strong{color:var(--success)}
+.dispo-month-label{font-size:11px;font-weight:700;color:var(--text-xs);
+  text-transform:uppercase;letter-spacing:.8px;margin:12px 0 6px;padding-left:2px}
+.dispo-row{display:flex;align-items:center;gap:12px;padding:10px 0;
+  border-bottom:.5px solid var(--border)}
+.dispo-row:last-child{border-bottom:none}
+.dispo-row-info{flex:1}
+.dispo-row-date{font-size:13px;font-weight:700;color:var(--text)}
+.dispo-row-type{font-size:11px;color:var(--text-s);margin-top:2px}
+.dispo-indisp-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;
+  border-radius:20px;border:1.5px solid var(--border);background:var(--surface2);
+  font-size:12px;font-weight:600;color:var(--text-s);cursor:pointer;transition:.2s;
+  white-space:nowrap}
+.dispo-indisp-btn.checked{background:var(--danger-l);border-color:var(--danger);
+  color:var(--danger)}
+.dispo-indisp-btn::before{content:'✅';margin-right:2px}
+.dispo-indisp-btn.checked::before{content:'❌'}
+.dispo-save-bar{position:sticky;bottom:calc(var(--nav-h)+8px);
+  background:var(--surface);border-top:1px solid var(--border);
+  padding:12px 0 6px;margin-top:14px}
+
+
+/* ── RAPPEL SERVICES — Bouton WhatsApp ── */
+.btn-rappel-service {
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;padding:9px 14px;border-radius:var(--radius-s);border:none;
+  background:#25D366;color:#fff;font-family:var(--font);font-size:12px;
+  font-weight:700;cursor:pointer;transition:.2s;margin-top:10px;
+}
+.btn-rappel-service:hover{background:#22c55e}
+.btn-rappel-service:active{transform:scale(0.97)}
+.btn-rappel-service.disabled-lambda{
+  background:var(--border);color:var(--text-xs);
+  cursor:not-allowed;pointer-events:none;opacity:.45;
+}
+
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══ HEADER ══ -->
+  <div id="header">
+    <div>
+      <h1>🎙 Planning Sono & Accueil</h1>
+      <small id="header-sub">Congrégation · V8</small>
+    </div>
+    <div class="header-actions">
+      <div style="position:relative">
+        <button class="icon-btn" id="btn-notifs" title="Notifications">🔔
+          <span class="notif-badge" id="notif-count" style="display:none">0</span>
+        </button>
+      </div>
+      <button class="icon-btn" id="btn-theme" title="Thème">🌙</button>
+    </div>
+  </div>
+
+  <!-- ══ TABS WRAPPER ══ -->
+  <div id="tabs-wrapper">
+
+    <!-- ═══ TAB PLANNING ═══ -->
+    <div id="tab-planning" class="tab-panel active">
+      <div id="install-banner" style="display:none">
+        📱 <span>Installer l'app sur votre écran d'accueil</span>
+        <button id="btn-install-pwa">Installer</button>
+        <button id="btn-close-install" style="background:transparent;font-size:16px">✕</button>
+      </div>
+
+      <div id="sync-bar" class="sync-none">
+        <span id="sync-icon">📡</span>
+        <span id="sync-msg">Connexion Drive non configurée</span>
+      </div>
+
+      <div class="section-header">
+        <div>
+          <div class="planning-month" id="plan-month">Mars 2026</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="icon-btn" id="btn-month-prev" style="background:var(--border);color:var(--text);width:32px;height:32px;font-size:14px">◀</button>
+          <button class="icon-btn" id="btn-month-next" style="background:var(--border);color:var(--text);width:32px;height:32px;font-size:14px">▶</button>
+        </div>
+      </div>
+
+      <!-- Stats admin-only -->
+      <div id="stats-row-admin" style="display:none">
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num" id="stat-services">0</div>
+          <div class="stat-label">Services ce mois</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-dispos">0</div>
+          <div class="stat-label">Disponibles</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-absences">0</div>
+          <div class="stat-label">Absences</div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Mon planning du mois (non-admin) -->
+      <div id="myplan-section" class="myplan-section">
+        <div class="card" style="padding:12px">
+          <div class="card-title">👤 Mon planning du mois</div>
+          <div class="myplan-select-wrap">
+            <select class="input-field" id="myplan-member-select">
+              <option value="">— Sélectionnez votre nom —</option>
+            </select>
+          </div>
+          <div id="myplan-banner-wrap" style="display:none">
+            <div class="myplan-banner">
+              <div class="myplan-banner-icon">👤</div>
+              <div class="myplan-banner-info">
+                <div class="myplan-banner-name" id="myplan-name"></div>
+                <div class="myplan-banner-sub" id="myplan-sub"></div>
+              </div>
+            </div>
+          </div>
+          <div id="myplan-content"></div>
+        </div>
+      </div>
+
+      <div class="view-toggle">
+        <button class="view-btn active" id="view-list-btn" id="view-list-btn" data-view="list">📋 Liste</button>
+        <button class="view-btn" id="view-week-btn" id="view-week-btn" data-view="week">📅 Hebdo</button>
+      </div>
+      <div id="planning-list"><!-- rendered by JS --></div>
+      <div id="planning-week" style="display:none"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-outline" style="flex:1" id="btn-export-pdf">📄 Exporter PDF</button>
+      </div>
+      <div style="height:10px"></div>
+    </div>
+
+        <!-- ═══ TAB DISPONIBILITÉS ═══ -->
+    <div id="tab-dispos" class="tab-panel">
+      <div class="section-title">📋 Mes Disponibilités</div>
+      <div class="section-sub">Indiquez vos <strong>indisponibilités</strong> — tout jour non coché = vous êtes disponible ✅</div>
+
+      <!-- Sélection du membre -->
+      <div class="card" style="padding:14px;margin-bottom:10px">
+        <label class="label">👤 Votre nom</label>
+        <select class="input-field" id="dispo-member-select">
+          <option value="">— Sélectionnez votre nom —</option>
+        </select>
+      </div>
+
+      <!-- Fenêtre fermée hors 20-28 (lambda uniquement) -->
+      <div id="dispo-window-warning" class="card" style="text-align:center;padding:20px;display:none">
+        <div style="font-size:32px;margin-bottom:8px">🔒</div>
+        <p style="font-size:14px;font-weight:700;color:var(--text)">Saisie non disponible actuellement</p>
+        <p style="font-size:12px;color:var(--text-s);margin-top:6px">La saisie des disponibilités est ouverte du <strong>20 au 28</strong> de chaque mois.</p>
+        <p id="next-window-msg" style="font-size:12px;color:var(--text-xs);margin-top:4px"></p>
+      </div>
+
+      <!-- Formulaire natif — affiché quand membre sélectionné et fenêtre ouverte -->
+      <div id="dispo-form-wrap" style="display:none">
+        <div class="dispo-intro">
+          ℹ️ <strong>Principe :</strong> Tous les mardis et samedis du mois sont <strong>disponibles par défaut</strong>.<br>
+          Cochez uniquement les dates où vous <strong>ne pouvez pas être présent(e)</strong>.
+        </div>
+
+        <!-- Les dates du mois suivant seront injectées ici -->
+        <div id="dispo-dates-container" class="card" style="padding:14px"></div>
+
+        <div class="dispo-save-bar">
+          <button class="btn btn-success btn-full" id="btn-save-dispo">
+            ✅ Enregistrer mes disponibilités
+          </button>
+        </div>
+        <div class="rgpd-note" style="margin-top:6px">
+          🔒 Données utilisées uniquement pour la planification des services.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB ATTRIBUTION<!-- ═══ TAB ATTRIBUTION (ADMIN) ═══ -->
+    <div id="tab-attribution" class="tab-panel">
+      <div class="section-header">
+        <div class="section-title">📋 Attribution</div>
+        <span id="admin-badge" class="badge badge-gold" style="display:none">🔑 Admin</span>
+      </div>
+
+      <!-- Non-admin view -->
+      <div id="attrib-locked" class="card" style="text-align:center;padding:30px">
+        <div style="font-size:40px;margin-bottom:12px">🔒</div>
+        <p style="font-size:14px;font-weight:600;color:var(--text)">Espace administrateur</p>
+        <p style="font-size:13px;color:var(--text-s);margin:8px 0 16px">Entrez le mot de passe pour accéder à la gestion des attributions.</p>
+        <div style="display:flex;gap:8px">
+          <input type="password" class="input-field" id="admin-pw-input" placeholder="Votre mot de passe personnel" id="admin-pw-input">
+          <button class="btn btn-primary" id="btn-check-admin">OK</button>
+        </div>
+      </div>
+
+      <!-- Admin view -->
+      <div id="attrib-admin" style="display:none">
+        <div class="card">
+          <div class="card-title">🗓️ Choisir un service</div>
+          <div class="scroll-x" id="attrib-date-chips"><!-- chips --></div>
+        </div>
+
+        <div id="attrib-slots-wrap" style="display:none">
+          <div class="card">
+            <div class="card-title" id="attrib-service-label">Attributions</div>
+            <div id="attrib-dispo-summary" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;font-weight:600"></div>
+            <div id="conflict-banner" class="conflict-banner">⚠️ <span id="conflict-count"></span></div>
+            <div class="attrib-filter-bar" id="attrib-filter-bar">
+              <button class="role-filter-btn active" data-filter="">Tous</button>
+            </div>
+            <div id="attrib-slots-list"><!-- slots --></div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button class="btn btn-outline btn-sm" id="btn-auto-assign">⚡ Auto-attribuer</button>
+              <button class="btn btn-success btn-sm" id="btn-save-attribution">💾 Sauvegarder</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🚫 Absences signalées</div>
+            <div id="absences-list"><!-- absences --></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📢 Envoyer les notifications</div>
+          <p style="font-size:12px;color:var(--text-s);margin-bottom:10px">Envoie un rappel WhatsApp (CallMeBot) à tous les membres assignés.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-outline btn-sm" id="btn-remind-all">📱 Rappel J-7 (tous)</button>
+            <button class="btn btn-outline btn-sm" id="btn-remind-week">📱 Rappel J-1</button>
+            <button class="btn btn-outline btn-sm" id="btn-remind-group">📱 Rappel J-0 (aujourd'hui)</button>
+            <button class="btn btn-outline btn-sm" id="btn-auto-reminder">⏰ Auto 2h avant</button>
+            <button class="btn btn-primary btn-sm" id="btn-export-csv">📥 Export CSV</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB MEMBRES ═══ -->
+    <div id="tab-membres" class="tab-panel">
+      <div class="section-header">
+        <div class="section-title">👥 Membres</div>
+        <button class="btn btn-accent btn-sm" id="add-member-btn" id="add-member-btn" style="display:none">+ Ajouter</button>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="input-field" id="member-search" placeholder="Rechercher un membre…" id="member-search">
+      </div>
+      <div id="membres-list"><!-- rendered --></div>
+    </div>
+
+    <!-- ═══ TAB STATS ═══ -->
+    <div id="tab-stats" class="tab-panel">
+      <div class="section-title">📊 Statistiques</div>
+      <div class="section-sub" style="margin-bottom:16px">Participation de l'équipe Sono & Accueil</div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="num" id="s-total-services">—</div><div class="lbl">Services ce mois</div></div>
+        <div class="stat-card"><div class="num" id="s-total-membres">—</div><div class="lbl">Membres actifs</div></div>
+        <div class="stat-card"><div class="num" id="s-taux">—</div><div class="lbl">Taux de couverture</div></div>
+        <div class="stat-card"><div class="num" id="s-absences">—</div><div class="lbl">Absences ce mois</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏆 Services par membre</div>
+        <div id="stats-membres-list" style="margin-top:8px"></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">📅 Filtre</div>
+        <select class="input-field" id="stats-month-select" id="stats-month-select" style="margin-top:6px"></select>
+      </div>
+
+      <button class="btn btn-outline btn-full" style="margin-top:12px" id="btn-export-stats">
+        ☁️ Exporter vers Google Sheets
+      </button>
+    </div>
+
+    <!-- ═══ TAB PARAMÈTRES ═══ -->
+    <div id="tab-params" class="tab-panel">
+      <div class="section-title" style="margin-bottom:16px">⚙️ Paramètres</div>
+
+      <!-- Apparence -->
+      <div class="card">
+        <div class="card-title">🎨 Apparence</div>
+        <div class="param-row">
+          <div class="param-info">
+            <div class="param-label">Mode sombre</div>
+            <div class="param-desc">Interface en thème nuit</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="dark-toggle" id="dark-toggle">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Google Drive -->
+      <div class="card">
+        <div class="card-title">☁️ Google Drive — Synchronisation</div>
+        <p style="font-size:12px;color:var(--text-s);margin-bottom:12px">Collez ici l'URL de votre Google Apps Script pour synchroniser les disponibilités sur Drive.</p>
+        <div class="form-group">
+          <label class="label">URL du Web App GAS</label>
+          <input class="input-field" id="gas-url-input" placeholder="https://script.google.com/macros/s/…/exec" value="">
+          <p style="font-size:11px;color:var(--text-xs);margin-top:4px">URL par défaut intégrée dans l'app. Renseignez ce champ uniquement pour utiliser un autre GAS.</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" id="btn-save-gas">💾 Enregistrer</button>
+          <button class="btn btn-outline btn-sm" id="btn-test-gas">🔗 Tester</button>
+          <button class="btn btn-outline btn-sm" id="btn-sync-drive">🔄 Synchroniser</button>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="card">
+        <div class="card-title">🔔 Notifications</div>
+        <div class="param-row">
+          <div class="param-info">
+            <div class="param-label">Notifications navigateur</div>
+            <div class="param-desc">Rappels de services à venir</div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="notif-perm-btn">Activer</button>
+        </div>
+        <div class="param-row">
+          <div class="param-info">
+            <div class="param-label">Rappel J-7</div>
+            <div class="param-desc">Notification 7 jours avant</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="remind7" checked>
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+        <div class="param-row">
+          <div class="param-info">
+            <div class="param-label">Rappel J-1</div>
+            <div class="param-desc">Notification la veille</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="remind1" checked>
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Admin -->
+      <div class="card">
+        <div class="card-title">🔑 Administrateur</div>
+        <div id="admin-status-display">
+          <div class="param-row">
+            <div class="param-info">
+              <div class="param-label">Mode admin</div>
+              <div class="param-desc" id="admin-status-text">Non connecté</div>
+            </div>
+            <button class="btn btn-outline btn-sm" id="admin-toggle-btn" id="admin-toggle-btn">Se connecter</button>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:10px">
+          <label class="label">Fenêtre de saisie (début du mois)</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="number" class="input-field" id="window-start" value="20" min="1" max="25" style="width:80px">
+            <span style="color:var(--text-s)">au</span>
+            <input type="number" class="input-field" id="window-end" value="30" min="20" max="31" style="width:80px">
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px" id="btn-save-settings">Enregistrer</button>
+        </div>
+
+      </div>
+
+      <!-- CallMeBot -->
+      <div class="card">
+        <div class="card-title">📱 WhatsApp / CallMeBot</div>
+        <p style="font-size:12px;color:var(--text-s);margin-bottom:10px">Instructions pour activer les rappels WhatsApp :</p>
+        <ol style="font-size:12px;color:var(--text-s);padding-left:18px;line-height:2">
+          <li>Ajouter <strong>+34 644 51 95 23</strong> dans les contacts</li>
+          <li>Envoyer : <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">I allow callmebot to send me messages</code></li>
+          <li>Recevoir la clé API par WhatsApp</li>
+          <li>Configurer numéro + clé dans la fiche membre</li>
+        </ol>
+        <button class="btn btn-success btn-sm" style="margin-top:10px" id="btn-wa-instructions">📋 Copier le message d'activation</button>
+      </div>
+
+      <!-- Données -->
+      <div class="card">
+        <div class="card-title">💾 Données</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" id="btn-export-data">📥 Exporter JSON</button>
+          <button class="btn btn-outline btn-sm" id="btn-import-data">📤 Importer</button>
+          <button class="btn btn-danger btn-sm" id="btn-reset-data">🗑️ Réinitialiser</button>
+        </div>
+        <input type="file" id="import-file" style="display:none" accept=".json" id="import-file">
+      </div>
+
+      <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--text-xs)">
+        BeluSoft-Tchapy © 2026 · Planning Sono V8<br>
+        <a href="https://github.com/belusoft" target="_blank">github.com/belusoft</a>
+      </div>
+    </div>
+
+  </div><!-- /tabs-wrapper -->
+
+  <!-- ══ BOTTOM NAV ══ -->
+  <nav id="bottom-nav">
+    <button class="nav-btn active" data-tab="planning">
+      <span class="nav-icon">🗓️</span>Planning
+    </button>
+    <button class="nav-btn" data-tab="dispos">
+      <span class="nav-icon">✅</span>Disponibilités
+    </button>
+    <button class="nav-btn" data-tab="attribution">
+      <span class="nav-icon">📋</span>Attribution
+    </button>
+    <button class="nav-btn" data-tab="membres">
+      <span class="nav-icon">👥</span>Membres
+    </button>
+    <button class="nav-btn" data-tab="stats">
+      <span class="nav-icon">📊</span>Stats
+    </button>
+    <button class="nav-btn" id="nav-params-btn" data-tab="params">
+      <span class="nav-icon">⚙️</span>Paramètres
+    </button>
+  </nav>
+
+<!-- ══ OVERLAY MOT DE PASSE PARAMÈTRES ══ -->
+<div id="params-pw-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border-radius:var(--radius);padding:28px 24px;width:90%;max-width:340px;box-shadow:var(--shadow-l)">
+    <div style="font-size:28px;text-align:center;margin-bottom:8px" id="pw-overlay-icon">⚙️</div>
+    <p style="font-weight:700;font-size:15px;text-align:center;margin-bottom:4px" id="pw-overlay-title">Accès administrateur</p>
+    <p style="font-size:13px;color:var(--text-s);text-align:center;margin-bottom:16px">Saisissez votre mot de passe personnel pour accéder à cet espace.</p>
+    <input type="password" class="input-field" id="params-pw-input" placeholder="Votre mot de passe personnel"
+      id="params-pw-input"
+      style="margin-bottom:12px">
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-outline" style="flex:1" id="btn-close-pw-overlay">Annuler</button>
+      <button class="btn btn-primary" style="flex:2" id="btn-check-params-pw">🔑 Accéder</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<!-- ══ MODAL MEMBRE ══ -->
+<div class="modal-overlay" id="modal-member">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-member-title">Ajouter un membre</div>
+    <input type="hidden" id="edit-member-id">
+    <div class="form-group">
+      <label class="label">Prénom</label>
+      <input class="input-field" id="m-prenom" placeholder="Prénom">
+    </div>
+    <div class="form-group">
+      <label class="label">Initiale du nom</label>
+      <input class="input-field" id="m-initiale" placeholder="B." maxlength="2">
+    </div>
+    <div class="form-group">
+      <label class="label">Rôles (cochez tous les rôles)</label>
+      <div id="m-roles-checkboxes" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px"></div>
+    </div>
+    <div class="form-group">
+      <label class="label">📱 Téléphone WhatsApp (avec indicatif, ex: 33612345678)</label>
+      <input class="input-field" id="m-tel" placeholder="336XXXXXXXX">
+    </div>
+    <div class="form-group">
+      <label class="label">🔑 Clé API CallMeBot</label>
+      <input class="input-field" id="m-apikey" placeholder="123456">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" style="flex:1" id="btn-cancel-member">Annuler</button>
+      <button class="btn btn-primary" style="flex:2" id="btn-save-member">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL NOTIFICATIONS ══ -->
+<div class="modal-overlay" id="modal-notifs">
+  <div class="modal-box">
+    <div class="modal-title">🔔 Notifications</div>
+    <div id="notifs-list"><!-- notifs --></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-full" id="btn-close-notifs">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL RAPPEL SERVICES DU JOUR ══ -->
+<div class="modal-overlay" id="modal-rappel">
+  <div class="modal-box">
+    <div class="modal-title">📋 Rappel des services du jour</div>
+    <textarea id="rappel-text" readonly
+      style="width:100%;min-height:280px;font-family:var(--font-b);font-size:13px;
+      line-height:1.6;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-s);
+      background:var(--surface2);color:var(--text);resize:vertical;white-space:pre-wrap"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-outline" style="flex:1" id="btn-close-rappel">Fermer</button>
+      <button class="btn btn-accent" style="flex:2" id="btn-copy-rappel">📋 Copier le message</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+'use strict';
+/* ══════════════════════════════════════════════════════════
+   RATE LIMITING — Anti brute-force Phase 2.A
+   Max 3 tentatives · Blocage 30 secondes
+══════════════════════════════════════════════════════════ */
+const AUTH = {
+  MAX_TRIES  : 3,
+  LOCKOUT_MS : 30_000,
+  LS_TRIES   : 'auth_tries',
+  LS_LOCK    : 'auth_locked_until',
+};
+
+function authCheckLock() {
+  const lockedUntil = parseInt(ls(AUTH.LS_LOCK, 0));
+  if (Date.now() < lockedUntil) {
+    const secs = Math.ceil((lockedUntil - Date.now()) / 1000);
+    ['params-pw-input','admin-pw-input'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.disabled = true;
+        el.placeholder = '🔒 Bloqué ' + secs + 's…';
+        setTimeout(() => { el.disabled = false; el.placeholder = 'Votre mot de passe personnel'; }, lockedUntil - Date.now());
+      }
+    });
+    toast('🔒 Trop de tentatives — réessayez dans ' + secs + 's');
+    return false;
+  }
+  return true;
+}
+
+function authRecordFail() {
+  const tries = parseInt(ls(AUTH.LS_TRIES, 0)) + 1;
+  lw(AUTH.LS_TRIES, tries);
+  if (tries >= AUTH.MAX_TRIES) {
+    lw(AUTH.LS_LOCK, Date.now() + AUTH.LOCKOUT_MS);
+    lw(AUTH.LS_TRIES, 0);
+    toast('🔒 3 échecs — accès bloqué 30 secondes');
+  } else {
+    toast('❌ Mot de passe incorrect (' + tries + '/' + AUTH.MAX_TRIES + ')');
+  }
+}
+
+function authRecordSuccess() {
+  lw(AUTH.LS_TRIES, 0);
+  lw(AUTH.LS_LOCK, 0);
+}
+
+/* ══════════════════════════════════════════════════════════
+   CONFIGURATION & DONNÉES
+══════════════════════════════════════════════════════════ */
+const ROLES = [
+  'Audio','Vidéo','Perches - Partie 1','Perches - Partie 2',
+  'Estrade','Estrade - Tablette',
+  'Accueil - Admission Zoom','Accueil - Ouverture','Accueil - Auditorium'
+];
+
+const ROLE_COLORS = {
+  'Audio':'#6C5CE7','Vidéo':'#0984E3',
+  'Perches - Partie 1':'#00B894','Perches - Partie 2':'#00CEC9',
+  'Estrade':'#FDCB6E','Estrade - Tablette':'#E17055',
+  'Accueil - Admission Zoom':'#D63031','Accueil - Ouverture':'#E84393','Accueil - Auditorium':'#B2BEC3'
+};
+
+// ── URL proxy Netlify (GAS_URL et GAS_SECRET dans variables d'env) ──
+const PROXY_URL = '/.netlify/functions/gas-proxy';
+
+// Mots de passe individuels des 5 administrateurs (SHA-256)
+// Format : "Toute l'Écriture est inspirée de Dieu - Prénom"
+const ADMIN_HASHES = [
+  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Luc BERGAME
+  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Frédéric RECCHIA
+  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Junior MBOMA
+  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Tevi MPOVI
+  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Credo GBEDEDJI
+];
+function isAdminHash(hash) { return ADMIN_HASHES.includes(hash); }
+
+const MEMBRES_DEFAUT = [
+  {id:1, prenom:'Luc',         initiale:'B.', roles:['Audio','Vidéo'],                                     tel:'',apiKey:'',actif:true},
+  {id:2, prenom:'Frédéric',   initiale:'R.', roles:['Audio','Vidéo'],                                     tel:'',apiKey:'',actif:true},
+  {id:3, prenom:'Junior',      initiale:'M.', roles:['Audio','Vidéo','Perches - Partie 1'],               tel:'',apiKey:'',actif:true},
+  {id:4, prenom:'Tevi',        initiale:'M.', roles:['Audio','Vidéo'],                                     tel:'',apiKey:'',actif:true},
+  {id:5, prenom:'Credo',       initiale:'G.', roles:['Audio','Vidéo'],                                     tel:'',apiKey:'',actif:true},
+  {id:6, prenom:'Antoni',      initiale:'P.', roles:['Audio'],                                              tel:'',apiKey:'',actif:true},
+  {id:7, prenom:'Axel',        initiale:'Z.', roles:['Audio','Perches - Partie 1'],                        tel:'',apiKey:'',actif:true},
+  {id:8, prenom:'Bruce',       initiale:'M.', roles:['Vidéo'],                                             tel:'',apiKey:'',actif:true},
+  {id:9, prenom:'Marius',      initiale:'B.', roles:['Perches - Partie 1','Perches - Partie 2'],           tel:'',apiKey:'',actif:true},
+  {id:10,prenom:'Cedrick',     initiale:'S.', roles:['Perches - Partie 1','Perches - Partie 2'],           tel:'',apiKey:'',actif:true},
+  {id:11,prenom:'Claude',      initiale:'M.', roles:['Perches - Partie 2'],                                tel:'',apiKey:'',actif:true},
+  {id:12,prenom:'Yannick',     initiale:'D.', roles:['Perches - Partie 1','Perches - Partie 2'],           tel:'',apiKey:'',actif:true},
+  {id:13,prenom:'Didier',      initiale:'M.', roles:['Perches - Partie 2','Estrade'],                      tel:'',apiKey:'',actif:true},
+  {id:14,prenom:'Marc',        initiale:'H.', roles:['Estrade','Estrade - Tablette'],                      tel:'',apiKey:'',actif:true},
+  {id:15,prenom:'Jean',        initiale:'G.', roles:['Estrade'],                                            tel:'',apiKey:'',actif:true},
+  {id:16,prenom:'Joël',        initiale:'D.', roles:['Estrade - Tablette'],                                tel:'',apiKey:'',actif:true},
+  {id:17,prenom:'Joël',        initiale:'P.', roles:['Estrade - Tablette'],                                tel:'',apiKey:'',actif:true},
+  {id:18,prenom:'Maïley',      initiale:'B.', roles:['Accueil - Auditorium','Accueil - Ouverture'],        tel:'',apiKey:'',actif:true},
+  {id:19,prenom:'Marc',        initiale:'P.', roles:['Accueil - Admission Zoom'],                          tel:'',apiKey:'',actif:true},
+  {id:20,prenom:'Mathieu',     initiale:'M.', roles:['Accueil - Admission Zoom','Accueil - Ouverture'],    tel:'',apiKey:'',actif:true},
+  {id:21,prenom:'Boris',       initiale:'M.', roles:['Accueil - Ouverture'],                               tel:'',apiKey:'',actif:true},
+  {id:22,prenom:'Alex',        initiale:'A.', roles:['Accueil - Ouverture','Accueil - Auditorium'],        tel:'',apiKey:'',actif:true},
+  {id:23,prenom:'Axandre',     initiale:'A.', roles:['Accueil - Ouverture'],                               tel:'',apiKey:'',actif:true},
+  {id:24,prenom:'Jean-Michel', initiale:'D.', roles:['Accueil - Auditorium'],                              tel:'',apiKey:'',actif:true},
+  {id:25,prenom:'Steeven',     initiale:'G.', roles:['Accueil - Auditorium'],                              tel:'',apiKey:'',actif:true},
+  {id:26,prenom:'Samuel',      initiale:'G.', roles:['Accueil - Auditorium'],                              tel:'',apiKey:'',actif:true},
+  {id:27,prenom:'Robert',      initiale:'I.', roles:['Accueil - Ouverture'],                               tel:'',apiKey:'',actif:true},
+  {id:28,prenom:'Sammy',       initiale:'L.', roles:['Accueil - Ouverture'],                               tel:'',apiKey:'',actif:true},
+  {id:29,prenom:'Thierry',     initiale:'L.', roles:['Accueil - Ouverture','Accueil - Auditorium'],        tel:'',apiKey:'',actif:true},
+  {id:30,prenom:'Maxime',      initiale:'M.', roles:['Accueil - Ouverture'],                               tel:'',apiKey:'',actif:true},
+  {id:31,prenom:'Yanis',       initiale:'M.', roles:['Perches - Partie 1','Perches - Partie 2'],           tel:'',apiKey:'',actif:true},
+  {id:32,prenom:'Stivy',       initiale:'M.', roles:['Accueil - Admission Zoom','Accueil - Ouverture'],    tel:'',apiKey:'',actif:true},
+  {id:33,prenom:'Tommy',       initiale:'N.', roles:['Accueil - Auditorium'],                              tel:'',apiKey:'',actif:true},
+  {id:34,prenom:'Clyde',       initiale:'P.', roles:['Accueil - Ouverture'],                               tel:'',apiKey:'',actif:true},
+  {id:35,prenom:'Raphaël',     initiale:'R.', roles:['Perches - Partie 1','Perches - Partie 2'],           tel:'',apiKey:'',actif:true},
+  {id:36,prenom:'Philippe',    initiale:'V.', roles:['Accueil - Ouverture','Accueil - Auditorium'],        tel:'',apiKey:'',actif:true},
+  {id:37,prenom:'Thierry',     initiale:'V.', roles:['Accueil - Ouverture'],                               tel:'',apiKey:'',actif:true},
+];
+
+/* ══ STATE ══ */
+let membres = [];
+let dispos  = {};  // { "id_YYYY-MM-DD": true|false }
+let planning = {}; // { "YYYY-MM-DD": { role: memberId } }
+let absences = []; // [ {membreId, date, raison} ]
+let notifications = [];
+let currentMonth = new Date().getMonth();
+let currentYear  = new Date().getFullYear();
+let selectedAttribDate = null;
+let isAdmin = false;
+let deferredInstall = null;
+
+const ls = (k, def) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch { return def; } };
+const lw = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+
+/* ══════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════
+   DISPONIBILITÉS PRÉ-INITIALISÉES
+   Avril → Juin 2026 : tous les membres disponibles par défaut
+   (aucune clé = disponible dans la nouvelle logique indisponibilités)
+   Pour compatibilité avec renderAttribSlots : on ne stocke rien
+   → undefined = disponible ✅  /  false = indisponible ❌
+══════════════════════════════════════════════════════════ */
+function initDisposAprilToJune() {
+  // Nouvelle logique : undefined = disponible, false = indisponible
+  // Pour Avril, Mai, Juin 2026 : effacer toutes les indisponibilités
+  // → tous les membres sont disponibles ces mois-là par défaut
+  const toDelete = [];
+  Object.keys(dispos).forEach(k => {
+    const parts = k.split('_');
+    if (parts.length >= 2) {
+      const dateStr = parts[parts.length - 1]; // YYYY-MM-DD
+      if (dateStr >= '2026-04-01' && dateStr <= '2026-06-30') {
+        toDelete.push(k);
+      }
+    }
+  });
+  if (toDelete.length) {
+    toDelete.forEach(k => delete dispos[k]);
+    lw('dispos', dispos);
+  }
+}
+
+async function init() {
+  membres  = ls('membres',  MEMBRES_DEFAUT);
+  dispos   = ls('dispos',   {});
+  planning = ls('planning', {});
+  absences = ls('absences', []);
+  notifications = ls('notifs', []);
+
+  const settings = ls('settings', {});
+  if (settings.dark) { document.documentElement.dataset.theme = 'dark'; document.getElementById('dark-toggle').checked = true; document.getElementById('theme-btn').textContent = '☀️'; }
+  document.getElementById('gas-url-input').value = settings.gasUrl || '';
+  if (settings.windowStart) document.getElementById('window-start').value = settings.windowStart;
+  if (settings.windowEnd) document.getElementById('window-end').value = settings.windowEnd;
+
+  populateMemberSelect();
+  populateMyPlanSelect();
+  renderPlanning();
+  renderMembers();
+  checkDispoWindow();
+  updateNotifBadge();
+  initStatsMonthSelect();
+  initAttribFilters();
+  updateAdminVisibility();
+  checkSmartNotifications();
+  checkWeeklySummary();
+
+  // Ping puis sync au démarrage
+  setSyncStatus('loading', '🔄 Connexion Drive…');
+  await pingAndSync();
+
+  // PWA
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; document.getElementById('install-banner').style.display = 'flex'; });
+  registerSW();
+  checkUpcomingReminders();
+  scheduleAutoReminder();
+}
+
+/* ══════════════════════════════════════════════════════════
+   GOOGLE DRIVE SYNC (via GAS Web App)
+══════════════════════════════════════════════════════════ */
+function getGasUrl() {
+  // URL configurable depuis Paramètres (pour override admin)
+  // Par défaut : proxy Netlify (GAS_URL et GAS_SECRET côté serveur uniquement)
+  return ls('settings',{}).gasUrl || PROXY_URL;
+}
+
+function setSyncStatus(type, msg) {
+  const bar = document.getElementById('sync-bar');
+  const icons = { ok:'✅', err:'❌', loading:'🔄', none:'📡' };
+  const classes = { ok:'sync-ok', err:'sync-err', loading:'sync-loading', none:'sync-none' };
+  bar.className = classes[type] || 'sync-none';
+  document.getElementById('sync-icon').textContent = icons[type]||'📡';
+  document.getElementById('sync-msg').textContent = msg;
+}
+
+async function pingAndSync() {
+  const url = getGasUrl();
+  try {
+    const res = await fetch(url + '?action=ping');
+    const data = await res.json();
+    if (data.status !== 'ok') throw new Error('GAS non opérationnel');
+    await syncFromDrive();
+  } catch(e) {
+    setSyncStatus('err', '❌ GAS inaccessible — données locales utilisées');
+    console.error('[ping]', e.message);
+  }
+}
+
+async function syncFromDrive() {
+  const url = getGasUrl();
+  if (!url) { setSyncStatus('none','📡 Drive non configuré'); return; }
+  setSyncStatus('loading','🔄 Synchronisation en cours…');
+  try {
+    // Utiliser fetch sans restriction de mode — GAS renvoie les headers CORS
+    const res = await fetch(url + '?action=loadAll');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    if (data.membres)  { membres  = data.membres;  lw('membres',  membres);  }
+    if (data.dispos)   { dispos   = data.dispos;   lw('dispos',   dispos);   }
+    if (data.planning) { planning = data.planning; lw('planning', planning); }
+    if (data.absences) { absences = data.absences; lw('absences', absences); }
+    const now = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    setSyncStatus('ok', '✅ Synchronisé depuis Drive · ' + now);
+    renderPlanning(); renderMembers(); populateMemberSelect(); populateMyPlanSelect(); renderAttribChips();
+    toast('✅ Données synchronisées depuis Drive');
+  } catch (e) {
+    setSyncStatus('err', '❌ Erreur Drive : ' + e.message);
+    toast('❌ Sync Drive échouée — données locales utilisées');
+  }
+}
+
+async function pushToDrive(payload) {
+  const url = getGasUrl();
+  if (!url) return false;
+  try {
+    // Le secret est injecté par le proxy Netlify côté serveur
+    // IMPORTANT : text/plain évite le preflight CORS que GAS ne gère pas
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    });
+
+    const text = await res.text();
+    console.log('[GAS response]', text.slice(0, 200));
+
+    // GAS peut renvoyer une page HTML d'erreur au lieu du JSON
+    if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
+      throw new Error('GAS a renvoyé une page HTML — vérifiez le déploiement');
+    }
+
+    let data;
+    try { data = JSON.parse(text); }
+    catch { throw new Error('Réponse non-JSON : ' + text.slice(0, 100)); }
+
+    if (data.error) throw new Error(data.error);
+    if (data.status !== 'ok') throw new Error('Statut inattendu : ' + data.status);
+
+    return true;
+  } catch (e) {
+    console.error('[pushToDrive]', e.message);
+    setSyncStatus('err', '❌ ' + e.message);
+    return false;
+  }
+}
+
+async function saveGasUrl() {
+  const url = document.getElementById('gas-url-input').value.trim();
+  const settings = ls('settings',{});
+  settings.gasUrl = url;
+  lw('settings', settings);
+  toast('💾 URL GAS enregistrée');
+  if (url) await syncFromDrive();
+}
+
+async function testGasUrl() {
+  const url = document.getElementById('gas-url-input').value.trim();
+  if (!url) { toast('⚠️ Collez d\'abord l\'URL GAS'); return; }
+  setSyncStatus('loading','🔄 Test en cours…');
+  try {
+    const res = await fetch(url + '?action=ping');
+    const data = await res.json();
+    if (data.status === 'ok') { setSyncStatus('ok','✅ Connexion Drive OK'); toast('✅ GAS connecté !'); }
+    else throw new Error('Réponse inattendue');
+  } catch (err) { setSyncStatus('err','❌ GAS inaccessible — vérifiez l\'URL'); toast('❌ GAS inaccessible : ' + err.message); }
+}
+
+/* ══════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════ */
+function switchTab(name, btn) {
+  // Onglets réservés aux admins : Paramètres, Stats, Membres
+  if ((name === 'params' || name === 'stats' || name === 'membres') && !isAdmin) {
+    pendingTab = { name, btn };
+    document.getElementById('params-pw-input').value = '';
+    document.getElementById('params-pw-overlay').style.display = 'flex';
+    updatePwOverlay(name);
+    setTimeout(() => document.getElementById('params-pw-input').focus(), 100);
+    return;
+  }
+  doSwitchTab(name, btn);
+}
+
+function doSwitchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'attribution') renderAttribChips();
+  if (name === 'membres') renderMembers();
+  if (name === 'stats') renderStats();
+}
+
+let pendingTab = null;
+
+async function checkParamsPassword() {
+  const pw = document.getElementById('params-pw-input').value;
+  if (!pw) { toast('⚠️ Saisissez votre mot de passe'); return; }
+  if (!authCheckLock()) return;
+  const hash = await deriveAdminKey(pw);
+  if (isAdminHash(hash)) {
+    authRecordSuccess();
+    isAdmin = true;
+    document.getElementById('attrib-locked').style.display = 'none';
+    document.getElementById('attrib-admin').style.display  = 'block';
+    document.getElementById('admin-badge').style.display   = 'inline-flex';
+    document.getElementById('admin-toggle-btn').textContent = 'Se déconnecter';
+    document.getElementById('admin-status-text').textContent = '🔑 Connecté en mode admin';
+    document.getElementById('add-member-btn').style.display = 'inline-flex';
+    document.getElementById('params-pw-overlay').style.display = 'none';
+    updateAdminVisibility();
+    if (pendingTab) { doSwitchTab(pendingTab.name, pendingTab.btn); pendingTab = null; }
+    toast('🔑 Mode admin activé');
+  } else {
+    authRecordFail();
+    document.getElementById('params-pw-input').value = '';
+    document.getElementById('params-pw-input').classList.add('shake');
+    setTimeout(() => document.getElementById('params-pw-input').classList.remove('shake'), 400);
+  }
+}
+
+// Met à jour l'icône et le titre de l'overlay selon l'onglet demandé
+function updatePwOverlay(tabName) {
+  const icons = { params: '⚙️', stats: '📊', membres: '👥' };
+  const el = document.getElementById('pw-overlay-icon');
+  if (el) el.textContent = icons[tabName] || '🔒';
+}
+
+function closeParamsPwOverlay() {
+  document.getElementById('params-pw-overlay').style.display = 'none';
+  pendingTab = null;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PLANNING VIEW
+══════════════════════════════════════════════════════════ */
+const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const DAYS   = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+  renderPlanning();
+}
+
+function getServiceDates(year, month) {
+  const dates = [];
+  const d = new Date(year, month, 1);
+  while (d.getMonth() === month) {
+    const dow = d.getDay();
+    if (dow === 2 || dow === 6) { // mardi=2, samedi=6
+      dates.push(new Date(d));
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  return dates;
+}
+
+function dateKey(d) { return d.toISOString().slice(0,10); }
+
+/* RGPD — Format Prénom + Initiale uniquement */
+function fmtName(prenom, initiale) {
+  return prenom + ' ' + initiale;  // ex: "Luc B."
+}
+
+function getMemberName(id) {
+  const m = membres.find(x => x.id === id);
+  return m ? fmtName(m.prenom, m.initiale) : null;
+}
+
+function renderPlanning() {
+  document.getElementById('plan-month').textContent = MONTHS[currentMonth] + ' ' + currentYear;
+  const dates = getServiceDates(currentYear, currentMonth);
+  const absenceDates = new Set(absences.map(a => a.date));
+
+  document.getElementById('stat-services').textContent  = dates.length;
+  const monthKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
+  document.getElementById('stat-dispos').textContent = Object.entries(dispos).filter(([k,v]) => v && k.includes('_'+monthKey)).length;
+  document.getElementById('stat-absences').textContent  = absences.filter(a => a.date.startsWith(currentYear+'-'+(String(currentMonth+1).padStart(2,'0')))).length;
+
+  // Rafraîchir "Mon planning du mois"
+  renderMyPlanning();
+
+  const list = document.getElementById('planning-list');
+  if (!dates.length) { list.innerHTML = '<p style="color:var(--text-xs);text-align:center;padding:20px">Aucun service ce mois</p>'; return; }
+
+  if (currentView === 'week') { renderWeekView(); return; }
+  list.innerHTML = dates.map(d => {
+    const key = dateKey(d);
+    const isSam = d.getDay() === 6;
+    const dayLabel = DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
+    const heure = isSam ? '16h30' : '19h00';
+    const hasAbsence = absenceDates.has(key);
+    const slots = planning[key] || {};
+
+    const rolesHtml = ROLES.map(r => {
+      const mId = slots[r];
+      const mName = mId ? getMemberName(mId) : null;
+      const color = ROLE_COLORS[r] || '#999';
+      return `<div class="role-row">
+        <span class="role-name"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:5px"></span>${r}</span>
+        ${mName ? `<span class="role-assigned">${mName}</span>` : '<span class="role-empty">Non attribué</span>'}
+      </div>`;
+    }).join('');
+
+    const rappelCls = isAdmin ? 'btn-rappel-service' : 'btn-rappel-service disabled-lambda';
+    return `<div class="service-card ${isSam?'samedi':''} ${hasAbsence?'absent-flag':''}">
+      <div class="service-date">${dayLabel}</div>
+      <div class="service-type">${isSam?'🟡 Samedi':'🔵 Mardi'} · ${heure} ${hasAbsence?'· <span style="color:var(--danger)">⚠️ Absence signalée</span>':''}</div>
+      ${rolesHtml}
+      <button class="${rappelCls}" data-rappel-date="${key}">
+        📱 Rappel services
+      </button>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════
+   MON PLANNING DU MOIS (vue non-admin)
+══════════════════════════════════════════════════════════ */
+function populateMyPlanSelect() {
+  const sel = document.getElementById('myplan-member-select');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Sélectionnez votre nom —</option>' +
+    membres.filter(m => m.actif).sort((a,b) => a.prenom.localeCompare(b.prenom))
+      .map(m => `<option value="${m.id}">${m.prenom} ${m.initiale}</option>`).join('');
+  // Restaurer le choix mémorisé
+  const saved = ls('myplan_member', null);
+  if (saved && membres.find(m => m.id === saved)) {
+    sel.value = saved;
+    onMyPlanSelect();
+  }
+}
+
+function onMyPlanSelect() {
+  const sel = document.getElementById('myplan-member-select');
+  const mId = parseInt(sel.value);
+  if (mId) lw('myplan_member', mId);
+  renderMyPlanning();
+}
+
+function renderMyPlanning() {
+  const sel = document.getElementById('myplan-member-select');
+  if (!sel) return;
+  const mId = parseInt(sel.value);
+  const banner = document.getElementById('myplan-banner-wrap');
+  const content = document.getElementById('myplan-content');
+
+  if (!mId) {
+    banner.style.display = 'none';
+    content.innerHTML = '<div class="myplan-empty">📋 Sélectionnez votre nom pour voir vos services du mois</div>';
+    return;
+  }
+
+  const m = membres.find(x => x.id === mId);
+  if (!m) { banner.style.display = 'none'; content.innerHTML = ''; return; }
+
+  // Collecter les services de ce membre sur le mois affiché
+  const dates = getServiceDates(currentYear, currentMonth);
+  const myServices = [];
+  dates.forEach(d => {
+    const key = dateKey(d);
+    const slots = planning[key] || {};
+    const myRoles = [];
+    Object.entries(slots).forEach(([role, assignedId]) => {
+      if (assignedId === mId) myRoles.push(role);
+    });
+    if (myRoles.length) myServices.push({ d, key, roles: myRoles });
+  });
+
+  // Banner
+  banner.style.display = 'flex';
+  document.getElementById('myplan-name').textContent = m.prenom + ' ' + m.initiale;
+  document.getElementById('myplan-sub').textContent =
+    myServices.length + ' service' + (myServices.length > 1 ? 's' : '') +
+    ' en ' + MONTHS[currentMonth] + ' ' + currentYear;
+
+  if (!myServices.length) {
+    content.innerHTML = '<div class="myplan-empty">Aucun service prévu ce mois pour vous</div>';
+    return;
+  }
+
+  // Détecter la semaine courante
+  const now = new Date();
+  const todayKey = dateKey(now);
+
+  content.innerHTML = myServices.map(s => {
+    const isSam = s.d.getDay() === 6;
+    const dayLabel = DAYS[s.d.getDay()] + ' ' + s.d.getDate() + ' ' + MONTHS[s.d.getMonth()];
+    const heure = isSam ? '16h30' : '19h00';
+    const isToday = s.key === todayKey;
+    const isPast = s.d < now && !isToday;
+
+    const rolesHtml = s.roles.map(r => {
+      const color = ROLE_COLORS[r] || '#999';
+      return `<span class="myplan-role" style="background:${color}18;color:${color};border:1px solid ${color}40">
+        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${color}"></span>
+        ${r}
+      </span>`;
+    }).join(' ');
+
+    return `<div class="myplan-service ${isSam ? 'samedi' : ''}" style="${isPast ? 'opacity:.5' : ''} ${isToday ? 'outline:2px solid var(--accent);outline-offset:2px' : ''}">
+      ${isToday ? '<div style="font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px">📍 AUJOURD\'HUI</div>' : ''}
+      <div class="myplan-date">${dayLabel}</div>
+      <div class="myplan-type">${isSam ? '🟡 Samedi' : '🔵 Mardi'} · ${heure}</div>
+      <div>${rolesHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateAdminVisibility() {
+  // Stats row: visible seulement en admin
+  const statsRow = document.getElementById('stats-row-admin');
+  if (statsRow) statsRow.style.display = isAdmin ? 'block' : 'none';
+  // Mon planning: visible seulement en NON-admin
+  const myplan = document.getElementById('myplan-section');
+  if (myplan) myplan.style.display = isAdmin ? 'none' : 'block';
+}
+
+/* ══════════════════════════════════════════════════════════
+   DISPONIBILITÉS
+══════════════════════════════════════════════════════════ */
+function populateMemberSelect() {
+  const sel = document.getElementById('dispo-member-select');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Sélectionnez votre nom —</option>' +
+    membres.filter(m => m.actif)
+      .sort((a,b) => a.prenom.localeCompare(b.prenom))
+      .map(m => `<option value="${m.id}">${fmtName(m.prenom, m.initiale)}</option>`)
+      .join('');
+}
+
+function getAllFutureDates() {
+  const now = new Date();
+  const dates = [];
+  for (let m = 0; m < 3; m++) {
+    const yr = now.getMonth()+m > 11 ? now.getFullYear()+1 : now.getFullYear();
+    const mn = (now.getMonth()+m) % 12;
+    getServiceDates(yr, mn).forEach(d => { if (d >= now) dates.push(d); });
+  }
+  return dates.slice(0, 20);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   DISPONIBILITÉS — Logique "indisponibilités seulement"
+   Par défaut tous disponibles — cocher = indisponible
+══════════════════════════════════════════════════════════ */
+
+/** Dates de service pour les 3 prochains mois (à partir du mois suivant) */
+function getDispoMonths() {
+  const now = new Date();
+  const months = [];
+  for (let delta = 1; delta <= 3; delta++) {
+    let y = now.getFullYear(), m = now.getMonth() + delta;
+    if (m > 11) { m -= 12; y++; }
+    const dates = getServiceDates(y, m);
+    if (dates.length) months.push({ year:y, month:m, dates });
+  }
+  return months;
+}
+
+/** Rend le formulaire d'indisponibilités pour un membre */
+function renderDispoFormNative(mId) {
+  const container = document.getElementById('dispo-dates-container');
+  if (!container) return;
+  const months = getDispoMonths();
+  if (!months.length) {
+    container.innerHTML = '<p style="color:var(--text-xs);text-align:center;padding:20px">Aucune date de service à venir</p>';
+    return;
+  }
+  let html = '';
+  months.forEach(({ year, month, dates }) => {
+    html += `<div class="dispo-month-label">${MONTHS[month]} ${year}</div>`;
+    dates.forEach(d => {
+      const key = mId + '_' + dateKey(d);
+      const isIndisp = dispos[key] === false; // false = indisponible
+      const isSam = d.getDay() === 6;
+      html += `<div class="dispo-row">
+        <div class="dispo-row-info">
+          <div class="dispo-row-date">${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${year}</div>
+          <div class="dispo-row-type">${isSam ? '🟡 Samedi · 16h30' : '🔵 Mardi · 19h00'}</div>
+        </div>
+        <button class="dispo-indisp-btn ${isIndisp ? 'checked' : ''}"
+          data-dispo-key="${key}"
+          data-date-key="${dateKey(d)}"
+          title="${isIndisp ? 'Indisponible — cliquez pour disponible' : 'Disponible — cliquez pour indisponible'}">
+          ${isIndisp ? 'Indisponible' : 'Disponible'}
+        </button>
+      </div>`;
+    });
+  });
+  container.innerHTML = html;
+}
+
+/** Toggle indisponibilité : false = indisponible / undefined (ou absent) = disponible */
+function toggleDispoNative(key, btn) {
+  const cur = dispos[key];
+  if (cur === false) {
+    // Était indisponible → devient disponible
+    delete dispos[key];
+    btn.classList.remove('checked');
+    btn.textContent = 'Disponible';
+    btn.title = 'Disponible — cliquez pour indisponible';
+  } else {
+    // Était disponible → devient indisponible
+    dispos[key] = false;
+    btn.classList.add('checked');
+    btn.textContent = 'Indisponible';
+    btn.title = 'Indisponible — cliquez pour disponible';
+  }
+}
+
+
+function checkDispoWindow() {
+  // Admin → toujours accès
+  // Lambda → accès du 20 au 28 seulement
+  const settings  = ls('settings', {});
+  const start     = parseInt(settings.windowStart || 20);
+  const end       = parseInt(settings.windowEnd   || 28);
+  const day       = new Date().getDate();
+  const inWindow  = isAdmin || (day >= start && day <= end);
+
+  const warning   = document.getElementById('dispo-window-warning');
+  const formWrap  = document.getElementById('dispo-form-wrap');
+  if (!warning || !formWrap) return;
+
+  if (inWindow) {
+    warning.style.display  = 'none';
+    // Le formulaire est affiché par onMemberSelect() quand un membre est choisi
+  } else {
+    warning.style.display  = 'block';
+    formWrap.style.display = 'none';
+    const nextStart = new Date();
+    nextStart.setDate(start);
+    if (nextStart <= new Date()) nextStart.setMonth(nextStart.getMonth() + 1);
+    const el = document.getElementById('next-window-msg');
+    if (el) el.textContent =
+      `Prochaine ouverture : le ${start} ${MONTHS[nextStart.getMonth()]} ${nextStart.getFullYear()}`;
+  }
+}
+
+function onMemberSelect() {
+  const sel = document.getElementById('dispo-member-select');
+  if (!sel) return;
+  const mId = parseInt(sel.value);
+  const formWrap = document.getElementById('dispo-form-wrap');
+  if (!formWrap) return;
+
+  if (!mId) { formWrap.style.display = 'none'; return; }
+
+  const settings  = ls('settings', {});
+  const start     = parseInt(settings.windowStart || 20);
+  const end       = parseInt(settings.windowEnd   || 28);
+  const day       = new Date().getDate();
+  const inWindow  = isAdmin || (day >= start && day <= end);
+
+  if (!inWindow) {
+    formWrap.style.display = 'none';
+    document.getElementById('dispo-window-warning').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('dispo-window-warning').style.display = 'none';
+  formWrap.style.display = 'block';
+  renderDispoFormNative(mId);
+}
+
+function renderDispoForm(mId) {
+  const futureDates = getAllFutureDates().slice(0, 12);
+  const list = document.getElementById('dispo-dates-list');
+  list.innerHTML = futureDates.map(d => {
+    const key = mId + '_' + dateKey(d);
+    const val = dispos[key] !== undefined ? dispos[key] : true;
+    const isSam = d.getDay() === 6;
+    return `<div class="dispo-item">
+      <div>
+        <div class="dispo-date">${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}</div>
+        <div class="dispo-day">${isSam ? '🟡 Samedi · 16h30' : '🔵 Mardi · 19h00'}</div>
+      </div>
+      <button class="toggle ${val?'on':''}" id="tog_${key}" data-dispo-key="${key}" title="${val?'Disponible':'Indisponible'}"></button>
+    </div>`;
+  }).join('');
+}
+
+function toggleDispo(key, btn) {
+  const cur = dispos[key] !== undefined ? dispos[key] : true;
+  dispos[key] = !cur;
+  btn.classList.toggle('on', dispos[key]);
+}
+
+async function saveDispo() {
+  const mId = parseInt(document.getElementById('dispo-member-select').value);
+  if (!mId) { toast('⚠️ Sélectionnez votre nom'); return; }
+
+  // Sauvegarder uniquement les indisponibilités (clés avec value === false)
+  lw('dispos', dispos);
+
+  const membre = membres.find(m => m.id === mId);
+  const prenom = membre ? membre.prenom   : '';
+  const nom    = membre ? membre.initiale : '';
+
+  setSyncStatus('loading', '🔄 Envoi en cours…');
+  const ok = await pushToDrive({ action:'saveDispo', dispos, membreId:mId, prenom, nom });
+  if (ok) {
+    setSyncStatus('ok', '✅ Disponibilités enregistrées sur Drive');
+    toast('✅ Disponibilités enregistrées !');
+    addNotif('✅ Disponibilités envoyées', `Indisponibilités de ${prenom} ${nom} sauvegardées.`);
+  } else {
+    setSyncStatus('err', '❌ Sauvegarde locale uniquement');
+    toast('⚠️ Sauvegardé localement — vérifiez la connexion Drive');
+  }
+}
+
+async function declareAbsence() {
+  const mId = parseInt(document.getElementById('dispo-member-select').value);
+  const date = document.getElementById('absence-date-select').value;
+  const raison = document.getElementById('absence-reason').value.trim();
+  if (!mId || !date) { toast('⚠️ Sélectionnez votre nom et la date'); return; }
+
+  const already = absences.find(a => a.membreId === mId && a.date === date);
+  if (already) { toast('ℹ️ Absence déjà signalée pour cette date'); return; }
+
+  absences.push({ membreId: mId, date, raison, signaleAdmin: false, ts: Date.now() });
+  lw('absences', absences);
+
+  const ok = await pushToDrive({ action:'saveAbsences', absences });
+  if (ok) toast('🚫 Absence signalée et envoyée à l\'admin');
+  else toast('🚫 Absence signalée (sync à venir)');
+
+  addNotif('🚫 Absence signalée', `Vous avez signalé votre absence pour le ${date}.`);
+  updateNotifBadge();
+  renderPlanning();
+}
+
+/* ══════════════════════════════════════════════════════════
+   ATTRIBUTION (ADMIN)
+══════════════════════════════════════════════════════════ */
+async function checkAdmin() {
+  const pw = document.getElementById('admin-pw-input').value;
+  if (!pw) { toast('⚠️ Saisissez votre mot de passe'); return; }
+  if (!authCheckLock()) return;
+  const hash = await deriveAdminKey(pw);
+  if (isAdminHash(hash)) {
+    authRecordSuccess();
+    isAdmin = true;
+    document.getElementById('attrib-locked').style.display = 'none';
+    document.getElementById('attrib-admin').style.display  = 'block';
+    document.getElementById('admin-badge').style.display   = 'inline-flex';
+    document.getElementById('admin-toggle-btn').textContent = 'Se déconnecter';
+    document.getElementById('admin-status-text').textContent = '🔑 Connecté en mode admin';
+    document.getElementById('add-member-btn').style.display = 'inline-flex';
+    updateAdminVisibility();
+    renderAttribChips();
+    renderMembers();
+    toast('🔑 Mode admin activé');
+  } else {
+    authRecordFail();
+    document.getElementById('admin-pw-input').value = '';
+    document.getElementById('admin-pw-input').classList.add('shake');
+    setTimeout(()=>document.getElementById('admin-pw-input').classList.remove('shake'),400);
+  }
+}
+
+function toggleAdmin() {
+  if (isAdmin) {
+    isAdmin = false;
+    document.getElementById('attrib-locked').style.display = 'block';
+    document.getElementById('attrib-admin').style.display  = 'none';
+    document.getElementById('admin-badge').style.display   = 'none';
+    document.getElementById('admin-toggle-btn').textContent = 'Se connecter';
+    document.getElementById('admin-status-text').textContent = 'Non connecté';
+    document.getElementById('add-member-btn').style.display = 'none';
+    updateAdminVisibility();
+    // Rediriger vers Planning si on était dans Paramètres
+    const active = document.querySelector('.tab-panel.active');
+    if (active && active.id === 'tab-params') switchTab('planning', document.querySelector('.nav-btn'));
+    toast('🔒 Mode admin désactivé');
+  }
+}
+
+
+
+function renderAttribChips() {
+  const futureDates = getAllFutureDates().slice(0, 16);
+  const wrap = document.getElementById('attrib-date-chips');
+  if (!wrap) return;
+  wrap.innerHTML = futureDates.map(d => {
+    const key = dateKey(d);
+    const isSam = d.getDay() === 6;
+    return `<div class="date-chip ${key===selectedAttribDate?'active':''}" data-key="${key}">
+      ${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}<br>
+      <small style="font-size:10px">${isSam?'Samedi':'Mardi'}</small>
+    </div>`;
+  }).join('');
+}
+
+function selectAttribDate(key, chip) {
+  selectedAttribDate = key;
+  document.querySelectorAll('.date-chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  renderAttribSlots(key);
+  renderAbsencesList(key);
+  renderDispoSummary(key);
+  document.getElementById('attrib-slots-wrap').style.display = 'block';
+  const d = new Date(key + 'T12:00:00');
+  document.getElementById('attrib-service-label').textContent =
+    `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function renderDispoSummary(dateKey) {
+  const wrap = document.getElementById('attrib-dispo-summary');
+  if (!wrap) return;
+  const actifs = membres.filter(m => m.actif);
+  let nbDispo = 0, nbIndispo = 0, nbPasRepondu = 0, nbAbsent = 0;
+  actifs.forEach(m => {
+    const isAbsent = absences.find(a => a.membreId === m.id && a.date === dateKey);
+    const val = dispos[m.id+'_'+dateKey];
+    if (isAbsent) nbAbsent++;
+    else if (val === false) nbIndispo++;
+    else nbDispo++;  // undefined = disponible par défaut
+  });
+  wrap.innerHTML =
+    `<span class="badge badge-green">✅ ${nbDispo} dispo</span>` +
+    `<span class="badge badge-red">⛔ ${nbIndispo} indispo</span>` +
+    `<span class="badge badge-warn">❓ ${nbPasRepondu} sans réponse</span>` +
+    (nbAbsent ? `<span class="badge badge-red">🚫 ${nbAbsent} absent(s)</span>` : '');
+}
+
+function renderAttribSlots(dateKey) {
+  const slots = planning[dateKey] || {};
+  const list  = document.getElementById('attrib-slots-list');
+  let conflictCount = 0;
+
+  // Compter l'usage global de chaque membre (pour équilibrer)
+  const usageCount = {};
+  membres.forEach(m => {
+    usageCount[m.id] = Object.values(planning).filter(d => Object.values(d).includes(m.id)).length;
+  });
+
+  const filteredRoles = ROLES.filter(r => roleMatchesFilter(r, activeRoleFilter));
+  list.innerHTML = filteredRoles.map(role => {
+    const assignedId = slots[role] || '';
+    const assignedMember = assignedId ? membres.find(m => m.id === assignedId) : null;
+
+    // Détecter le conflit : membre assigné mais absent
+    const isConflict = assignedId && absences.find(a => a.membreId === assignedId && a.date === dateKey);
+    if (isConflict) conflictCount++;
+
+    // Trouver le meilleur remplaçant (dispo explicite === true, non absent, le moins utilisé)
+    const replacement = isConflict ? membres.filter(m =>
+      m.actif && m.roles.includes(role) && m.id !== assignedId &&
+      dispos[m.id+'_'+dateKey] !== false &&
+      !absences.find(a => a.membreId === m.id && a.date === dateKey) &&
+      !Object.values(slots).includes(m.id)
+    ).sort((a,b) => (usageCount[a.id]||0) - (usageCount[b.id]||0))[0] : null;
+
+    // Construire les options — classement :
+    // 1. ✅ Disponibles (dispo === true) — triés par nb services (moins utilisé en premier)
+    // 2. ❓ Pas de réponse (dispo === undefined) — grisés
+    // 3. ⛔ Indisponibles (dispo === false) — grisés
+    // 4. 🚫 Absents — rouges
+    const eligibles = membres.filter(m => m.actif && m.roles.includes(role));
+    const sorted_elig = [...eligibles].sort((a, b) => {
+      const dispoA = dispos[a.id+'_'+dateKey];
+      const dispoB = dispos[b.id+'_'+dateKey];
+      const absA = absences.find(x=>x.membreId===a.id&&x.date===dateKey);
+      const absB = absences.find(x=>x.membreId===b.id&&x.date===dateKey);
+      const scoreA = absA ? 3 : dispoA === false ? 2 : dispoA === undefined ? 1 : 0;
+      const scoreB = absB ? 3 : dispoB === false ? 2 : dispoB === undefined ? 1 : 0;
+      if (scoreA !== scoreB) return scoreA - scoreB;
+      // À score égal, le moins utilisé en premier
+      return (usageCount[a.id]||0) - (usageCount[b.id]||0);
+    });
+
+    const opts = `<option value="">— Non attribué —</option>` +
+      sorted_elig.map(m => {
+        const mAbsent   = absences.find(a => a.membreId === m.id && a.date === dateKey);
+        const mDispo    = dispos[m.id+'_'+dateKey];
+        const mIndispo  = mDispo === false;
+        const mPasRepondu = mDispo === undefined;
+        const usage     = usageCount[m.id] || 0;
+
+        let suffix, color;
+        if (mAbsent)       { suffix = ' 🚫 Absent';         color = '#E53E3E'; }
+        else if (mIndispo) { suffix = ' ⛔ Indisponible';    color = '#aaa'; }
+        else if (mPasRepondu) { suffix = ' ❓ Pas de réponse'; color = '#B0B0B0'; }
+        else               { suffix = ` ✅ (${usage} svc)`;  color = 'inherit'; }
+
+        const label = m.prenom + ' ' + m.initiale + suffix;
+        return `<option value="${m.id}" ${assignedId==m.id?'selected':''}
+          style="color:${color}">${label}</option>`;
+      }).join('');
+
+    const color = ROLE_COLORS[role] || '#999';
+    const conflictBadge = isConflict ? `
+      <div class="conflict-badge">
+        🚫 ${assignedMember?.prenom||'?'} a signalé son absence
+        ${replacement ? `<button class="replace-btn" data-dk="${dateKey}" data-role="${role}" data-mid="${replacement.id}">
+          Remplacer par ${replacement.prenom} ${replacement.initiale} ✅</button>` : '<span style="color:var(--text-xs);font-size:11px">Aucun remplaçant dispo</span>'}
+      </div>` : '';
+
+    return `<div class="attrib-slot ${isConflict?'conflict':''}">
+      <div class="attrib-role"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:5px"></span>${role}</div>
+      <select class="attrib-select ${isConflict?'conflict-select':''}" data-role="${role}"
+        onchange="updateSlot('${dateKey}','${role}',this.value)">${opts}</select>
+      ${conflictBadge}
+    </div>`;
+  }).join('');
+
+  // Bannière globale
+  const banner = document.getElementById('conflict-banner');
+  if (conflictCount > 0) {
+    banner.style.display = 'block';
+    document.getElementById('conflict-count').textContent =
+      `${conflictCount} conflit(s) détecté(s) — des membres assignés ont signalé leur absence`;
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+let _autosaveTimer = null;
+
+function applyReplacement(dk, role, newMemberId) {
+  if (!planning[dk]) planning[dk] = {};
+  planning[dk][role] = newMemberId;
+  lw('planning', planning);
+  renderPlanning();
+  renderAttribSlots(dk);
+  toast('✅ Remplacement appliqué');
+  clearTimeout(_autosaveTimer);
+  _autosaveTimer = setTimeout(() => autoPushPlanning(), 3000);
+}
+
+function updateSlot(dateKey, role, memberId) {
+  if (!planning[dateKey]) planning[dateKey] = {};
+  if (memberId) planning[dateKey][role] = parseInt(memberId);
+  else delete planning[dateKey][role];
+
+  // Auto-save immédiat en local + rafraîchir le planning
+  lw('planning', planning);
+  renderPlanning();
+
+  // Auto-push vers Drive avec debounce (3s après le dernier changement)
+  clearTimeout(_autosaveTimer);
+  _autosaveTimer = setTimeout(() => autoPushPlanning(), 3000);
+}
+
+async function autoPushPlanning() {
+  setSyncStatus('loading', '🔄 Sauvegarde automatique…');
+  const ok = await pushToDrive({ action:'savePlanning', planning });
+  if (ok) {
+    const now = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    setSyncStatus('ok', '✅ Planning sauvegardé · ' + now);
+  } else {
+    setSyncStatus('err', '❌ Échec sync — sauvegardé localement');
+  }
+}
+
+function autoAssign() {
+  if (!selectedAttribDate) return;
+  const usageCount = {};
+  membres.forEach(m => {
+    usageCount[m.id] = Object.values(planning).filter(day => Object.values(day).includes(m.id)).length;
+  });
+  if (!planning[selectedAttribDate]) planning[selectedAttribDate] = {};
+  ROLES.forEach(role => {
+    if (planning[selectedAttribDate][role]) return; // already assigned
+    // UNIQUEMENT les membres ayant explicitement répondu dispo === true
+    const candidates = membres.filter(m =>
+      m.actif && m.roles.includes(role) &&
+      dispos[m.id+'_'+selectedAttribDate] === true &&
+      !absences.find(a => a.membreId === m.id && a.date === selectedAttribDate) &&
+      !Object.values(planning[selectedAttribDate]).includes(m.id) // not already used today
+    ).sort((a,b) => (usageCount[a.id]||0) - (usageCount[b.id]||0));
+    if (candidates.length) {
+      planning[selectedAttribDate][role] = candidates[0].id;
+      usageCount[candidates[0].id] = (usageCount[candidates[0].id]||0) + 1;
+    }
+  });
+  renderAttribSlots(selectedAttribDate);
+  lw('planning', planning);
+  renderPlanning();
+
+  // Push vers Drive immédiatement après auto-attribution
+  clearTimeout(_autosaveTimer);
+  autoPushPlanning();
+
+  // Compter les rôles non pourvus
+  const nonPourvus = ROLES.filter(r => !planning[selectedAttribDate][r]).length;
+  if (nonPourvus > 0) {
+    toast(`⚡ Auto-attribution : ${ROLES.length - nonPourvus}/${ROLES.length} rôles pourvus (${nonPourvus} sans dispo)`);
+  } else {
+    toast('⚡ Auto-attribution complète !');
+  }
+}
+
+async function saveAttribution() {
+  lw('planning', planning);
+  renderPlanning();
+  clearTimeout(_autosaveTimer);
+  await autoPushPlanning();
+  toast('✅ Planning sauvegardé');
+}
+
+function renderAbsencesList(dateKey) {
+  const dayAbsences = absences.filter(a => a.date === dateKey);
+  const list = document.getElementById('absences-list');
+  if (!dayAbsences.length) { list.innerHTML = '<p style="font-size:12px;color:var(--text-xs)">Aucune absence signalée</p>'; return; }
+  list.innerHTML = dayAbsences.map(a => {
+    const m = membres.find(x => x.id === a.membreId);
+    const name = m ? m.prenom + ' ' + m.initiale : 'Inconnu';
+    return `<div class="absence-item">
+      <span style="font-size:20px">🚫</span>
+      <div>
+        <div class="absence-name">${name}</div>
+        <div class="absence-date">${a.raison||'Pas de motif'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════
+   MEMBRES
+══════════════════════════════════════════════════════════ */
+const AVATAR_COLORS = ['#6C5CE7','#0984E3','#00B894','#E17055','#FDCB6E','#D63031','#E84393','#6C5CE7'];
+
+function renderMembers() {
+  const q = (document.getElementById('member-search')?.value||'').toLowerCase();
+  const list = document.getElementById('membres-list');
+  const filtered = membres.filter(m => !q || (m.prenom+' '+m.initiale).toLowerCase().includes(q));
+  if (!filtered.length) { list.innerHTML = '<p style="color:var(--text-xs);text-align:center;padding:20px">Aucun membre trouvé</p>'; return; }
+  list.innerHTML = `<div class="card"><div id="members-inner">` + filtered.map(m => {
+    const initials = m.prenom[0] + (m.initiale[0]||'');
+    const color = AVATAR_COLORS[m.id % AVATAR_COLORS.length];
+    const rolesHtml = m.roles.slice(0,3).map(r =>
+      `<span class="badge" style="background:${ROLE_COLORS[r]}22;color:${ROLE_COLORS[r]};font-size:10px">${r.replace('Accueil - ','').replace('Perches - ','')}</span>`
+    ).join('');
+    const waIcon = m.tel && m.apiKey ? '💬' : '';
+    return `<div class="member-row">
+      <div class="member-avatar" style="background:${color}">${initials}</div>
+      <div class="member-info">
+        <div class="member-name">${m.prenom} ${m.initiale} ${waIcon}</div>
+        <div class="member-roles">${rolesHtml}</div>
+      </div>
+      ${isAdmin ? `<div class="member-actions">
+        <button class="btn btn-outline btn-sm" data-edit-id="${m.id}">✏️</button>
+        <button class="btn btn-danger btn-sm" data-del-id="${m.id}">🗑️</button>
+      </div>` : ''}
+    </div>`;
+  }).join('') + `</div></div>`;
+}
+
+function openAddMember() {
+  document.getElementById('modal-member-title').textContent = 'Ajouter un membre';
+  document.getElementById('edit-member-id').value = '';
+  document.getElementById('m-prenom').value = '';
+  document.getElementById('m-initiale').value = '';
+  document.getElementById('m-tel').value = '';
+  document.getElementById('m-apikey').value = '';
+  renderRolesCheckboxes([]);
+  openModal('modal-member');
+}
+
+function editMember(id) {
+  const m = membres.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('modal-member-title').textContent = 'Modifier le membre';
+  document.getElementById('edit-member-id').value = id;
+  document.getElementById('m-prenom').value = m.prenom;
+  document.getElementById('m-initiale').value = m.initiale;
+  document.getElementById('m-tel').value = m.tel || '';
+  document.getElementById('m-apikey').value = m.apiKey || '';
+  renderRolesCheckboxes(m.roles);
+  openModal('modal-member');
+}
+
+function renderRolesCheckboxes(selected) {
+  document.getElementById('m-roles-checkboxes').innerHTML = ROLES.map(r =>
+    `<label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+      <input type="checkbox" value="${r}" ${selected.includes(r)?'checked':''} style="accent-color:var(--primary)">
+      <span style="color:var(--text)">${r}</span>
+    </label>`
+  ).join('');
+}
+
+async function saveMember() {
+  const prenom = document.getElementById('m-prenom').value.trim();
+  const initiale = document.getElementById('m-initiale').value.trim();
+  const tel = document.getElementById('m-tel').value.trim();
+  const apiKey = document.getElementById('m-apikey').value.trim();
+  const roles = [...document.querySelectorAll('#m-roles-checkboxes input:checked')].map(cb => cb.value);
+  if (!prenom || !roles.length) { toast('⚠️ Prénom et au moins un rôle obligatoires'); return; }
+  const editId = parseInt(document.getElementById('edit-member-id').value);
+  if (editId) {
+    const idx = membres.findIndex(m => m.id === editId);
+    if (idx >= 0) membres[idx] = { ...membres[idx], prenom, initiale, roles, tel, apiKey };
+  } else {
+    const maxId = membres.reduce((a,m) => Math.max(a,m.id), 0);
+    membres.push({ id: maxId+1, prenom, initiale, roles, tel, apiKey, actif: true });
+  }
+  lw('membres', membres);
+  await pushToDrive({ action:'saveMembres', membres });
+  renderMembers(); populateMemberSelect(); populateMyPlanSelect();
+  closeModal('modal-member');
+  toast('✅ Membre enregistré');
+}
+
+async function deleteMember(id) {
+  if (!confirm('Supprimer ce membre ?')) return;
+  membres = membres.filter(m => m.id !== id);
+  lw('membres', membres);
+  await pushToDrive({ action:'saveMembres', membres });
+  renderMembers(); populateMemberSelect(); populateMyPlanSelect();
+  toast('🗑️ Membre supprimé');
+}
+
+/* ══════════════════════════════════════════════════════════
+   CALLMEBOT / WHATSAPP NOTIFICATIONS
+══════════════════════════════════════════════════════════ */
+// Icônes par rôle
+const ROLE_ICONS = {
+  'Audio'                   : '🎤',
+  'Vidéo'                   : '📹',
+  'Perches - Partie 1'      : '🎙️',
+  'Perches - Partie 2'      : '🎙️',
+  'Estrade'                 : '🎭',
+  'Estrade - Tablette'      : '📱',
+  'Accueil - Admission Zoom': '💻',
+  'Accueil - Ouverture'     : '🚪',
+  'Accueil - Auditorium'    : '🏛️',
+};
+
+// Construit la liste des services d'une date donnée
+function buildServiceList(dateKey) {
+  const slots = planning[dateKey] || {};
+  return Object.entries(slots)
+    .filter(([, mId]) => mId)
+    .map(([role, mId]) => {
+      const m = membres.find(x => x.id === mId);
+      const nom = m ? m.nom || (m.prenom + ' ' + m.initiale) : '?';
+      const icon = ROLE_ICONS[role] || '🔹';
+      return `👤 ${nom} → ${icon} ${role}`;
+    }).join('\n');
+}
+
+// Rappels individuels J-7 ou J-1 (message personnel)
+async function sendReminders(mode) {
+  const assignedMembers = [];
+  Object.entries(planning).forEach(([date, slots]) => {
+    const d = new Date(date + 'T12:00:00');
+    const now = new Date();
+    const diff = (d - now) / 86400000;
+    const inRange = mode === 'all' ? (diff > 0 && diff <= 7) : (diff > 0 && diff <= 1.5);
+    if (!inRange) return;
+    Object.entries(slots).forEach(([role, mId]) => {
+      const m = membres.find(x => x.id === mId);
+      if (m && m.tel && m.apiKey) assignedMembers.push({ m, role, date, d });
+    });
+  });
+
+  if (!assignedMembers.length) { toast('ℹ️ Aucun membre à notifier pour la période'); return; }
+
+  let sent = 0;
+  for (const {m, role, date, d} of assignedMembers) {
+    const msg = `Bonjour ${m.prenom} ! 👋\n\nRappel : vous êtes prévu(e) au service *${role}* le ${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}.\n\nMerci de votre engagement ! 🙏\n— Planning Sono & Accueil`;
+    const url = `https://api.callmebot.com/whatsapp.php?phone=${m.tel}&text=${encodeURIComponent(msg)}&apikey=${m.apiKey}`;
+    try { await fetch(url); sent++; } catch {}
+    await new Promise(r => setTimeout(r, 2000));
+  }
+  toast(`📱 ${sent} rappel(s) WhatsApp envoyé(s)`);
+  addNotif('📱 Rappels envoyés', `${sent} membre(s) notifié(s) via WhatsApp.`);
+}
+
+// Rappel collectif J-0 : message groupé envoyé à chaque membre assigné aujourd'hui
+async function sendGroupReminder() {
+  const today = new Date();
+  const todayKey = dateKey(today);
+  const slots = planning[todayKey];
+
+  if (!slots || !Object.keys(slots).length) {
+    toast("ℹ️ Aucun service programmé aujourd'hui");
+    return;
+  }
+
+  // Construire la liste complète des services
+  const serviceList = buildServiceList(todayKey);
+  if (!serviceList) { toast("ℹ️ Aucun membre assigné aujourd'hui"); return; }
+
+  const isSam   = today.getDay() === 6;
+  const heure   = isSam ? '16h30' : '19h00';
+  const dateStr = `${DAYS[today.getDay()]} ${today.getDate()} ${MONTHS[today.getMonth()]} ${today.getFullYear()}`;
+
+  const msg =
+    `Bonjour,\nVoici les services prévus pour aujourd'hui (${dateStr} — ${heure}) :\n\n` +
+    serviceList +
+    `\n\nMerci d'être présents et ponctuels ! 🙏\n— Planning Sono & Accueil`;
+
+  // Envoyer à tous les membres assignés qui ont tel + apiKey
+  const recipients = Object.values(slots)
+    .map(mId => membres.find(x => x.id === mId))
+    .filter(m => m && m.tel && m.apiKey);
+
+  if (!recipients.length) {
+    toast("⚠️ Aucun numéro configuré pour les membres d'aujourd'hui");
+    return;
+  }
+
+  let sent = 0;
+  for (const m of recipients) {
+    const url = `https://api.callmebot.com/whatsapp.php?phone=${m.tel}&text=${encodeURIComponent(msg)}&apikey=${m.apiKey}`;
+    try { await fetch(url); sent++; } catch {}
+    await new Promise(r => setTimeout(r, 2000));
+  }
+  toast(`📱 ${sent} rappel(s) groupé(s) envoyé(s)`);
+  addNotif('📱 Rappel J-0 envoyé', `${sent} membre(s) notifié(s) — services du jour.`);
+}
+
+// Programmation automatique 2h avant le service
+function scheduleAutoReminder() {
+  const now    = new Date();
+  const todayKey_ = dateKey(now);
+  const slots  = planning[todayKey_];
+  if (!slots || !Object.keys(slots).length) return;
+
+  const isSam  = now.getDay() === 6;
+  const hService = isSam ? 16 : 19;
+  const mService = isSam ? 30 : 0; // Samedi 16h30, Mardi 19h00
+
+  const serviceTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hService, mService, 0);
+  const reminderTime = new Date(serviceTime.getTime() - 2 * 60 * 60 * 1000); // -2h
+  const msUntil = reminderTime - now;
+
+  if (msUntil > 0 && msUntil < 3 * 60 * 60 * 1000) {
+    // Dans moins de 3h → programmer
+    const alreadySent = ls('reminderSent_' + todayKey_, false);
+    if (!alreadySent) {
+      setTimeout(async () => {
+        lw('reminderSent_' + todayKey_, true);
+        await sendGroupReminder();
+        addNotif('⏰ Rappel automatique envoyé', 'Message groupé envoyé 2h avant le service.');
+      }, msUntil);
+      const hR = reminderTime.getHours().toString().padStart(2,'0');
+      const mR = reminderTime.getMinutes().toString().padStart(2,'0');
+      toast(`⏰ Rappel automatique programmé à ${hR}h${mR}`);
+      addNotif('⏰ Rappel programmé', `Envoi automatique à ${hR}h${mR} (2h avant le service).`);
+    }
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   STATISTIQUES
+══════════════════════════════════════════════════════════ */
+function initStatsMonthSelect() {
+  const sel = document.getElementById('stats-month-select');
+  if (!sel) return;
+  const now = new Date();
+  sel.innerHTML = '';
+  for (let i = -2; i <= 1; i++) {
+    let m = now.getMonth() + i, y = now.getFullYear();
+    if (m < 0)  { m += 12; y--; }
+    if (m > 11) { m -= 12; y++; }
+    const val = y + '-' + String(m+1).padStart(2,'0');
+    const lbl = MONTHS[m] + ' ' + y;
+    const opt = document.createElement('option');
+    opt.value = val; opt.textContent = lbl;
+    if (i === 0) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+function renderStats() {
+  const sel   = document.getElementById('stats-month-select');
+  const mKey  = sel ? sel.value : (new Date().getFullYear() + '-' + String(new Date().getMonth()+1).padStart(2,'0'));
+  const [yr, mo] = mKey.split('-').map(Number);
+  const dates = getServiceDates(yr, mo-1);
+  const dKeys = dates.map(d => dateKey(d));
+
+  // Compter les services attribués par membre ce mois
+  const countByMember = {};
+  membres.forEach(m => { countByMember[m.id] = 0; });
+  dKeys.forEach(dk => {
+    const slots = planning[dk] || {};
+    Object.values(slots).forEach(mId => {
+      if (mId) countByMember[mId] = (countByMember[mId]||0) + 1;
+    });
+  });
+
+  // Slots couverts vs total
+  const totalSlots    = dKeys.reduce((acc, dk) => acc + Object.values(planning[dk]||{}).filter(Boolean).length, 0);
+  const maxSlots      = dKeys.length * ROLES.length;
+  const tauxCouv      = maxSlots ? Math.round(totalSlots / maxSlots * 100) : 0;
+  const absMonth      = absences.filter(a => a.date.startsWith(mKey)).length;
+  const membresActifs = membres.filter(m => m.actif).length;
+
+  // Stats globales
+  document.getElementById('s-total-services').textContent = dKeys.length;
+  document.getElementById('s-total-membres').textContent  = membresActifs;
+  document.getElementById('s-taux').textContent           = tauxCouv + '%';
+  document.getElementById('s-absences').textContent       = absMonth;
+
+  // Classement membres
+  const maxCount = Math.max(1, ...Object.values(countByMember));
+  const sorted = membres.filter(m => m.actif)
+    .sort((a,b) => (countByMember[b.id]||0) - (countByMember[a.id]||0));
+
+  const list = document.getElementById('stats-membres-list');
+  list.innerHTML = sorted.map(m => {
+    const cnt  = countByMember[m.id] || 0;
+    const pct  = Math.round(cnt / maxCount * 100);
+    const medal = cnt === maxCount && cnt > 0 ? '🥇' : '';
+    return `<div class="member-stat-row">
+      <span style="width:100px;font-size:12px;font-weight:600">${medal}${m.prenom} ${m.initiale}</span>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${pct}%"></div></div>
+      <span style="width:28px;text-align:right;font-size:12px;font-weight:700;color:var(--primary)">${cnt}</span>
+    </div>`;
+  }).join('');
+}
+
+async function exportStatsToSheets() {
+  const sel   = document.getElementById('stats-month-select');
+  const mKey  = sel ? sel.value : '';
+  const [yr, mo] = mKey.split('-').map(Number);
+  const dates = getServiceDates(yr, mo-1);
+  const dKeys = dates.map(d => dateKey(d));
+
+  const rows = [];
+  // En-tête
+  rows.push(['Mois', 'Membre', 'Nb services', 'Rôles exercés', 'Absences']);
+
+  membres.filter(m => m.actif).forEach(m => {
+    let cnt = 0; const rolesEx = new Set();
+    dKeys.forEach(dk => {
+      const slots = planning[dk] || {};
+      Object.entries(slots).forEach(([role, mId]) => {
+        if (mId === m.id) { cnt++; rolesEx.add(role); }
+      });
+    });
+    const absCount = absences.filter(a => a.membreId === m.id && a.date.startsWith(mKey)).length;
+    rows.push([MONTHS[mo-1]+' '+yr, m.prenom+' '+m.initiale, cnt, [...rolesEx].join(', '), absCount]);
+  });
+
+  const ok = await pushToDrive({ action:'saveStats', mois: mKey, rows });
+  if (ok) toast('✅ Stats exportées vers Google Sheets');
+  else toast('⚠️ Export échoué — Drive non configuré');
+}
+
+function openWaInstructions() {
+  const msg = 'I allow callmebot to send me messages';
+  navigator.clipboard.writeText(msg).then(()=>toast('📋 Message copié !'));
+}
+
+/* ══════════════════════════════════════════════════════════
+   NOTIFICATIONS (WEB PUSH)
+══════════════════════════════════════════════════════════ */
+function addNotif(title, body) {
+  notifications.unshift({ title, body, ts: Date.now(), read: false });
+  if (notifications.length > 20) notifications = notifications.slice(0, 20);
+  lw('notifs', notifications);
+  updateNotifBadge();
+}
+
+function updateNotifBadge() {
+  const unread = notifications.filter(n => !n.read).length;
+  const badge = document.getElementById('notif-count');
+  badge.textContent = unread;
+  badge.style.display = unread ? 'flex' : 'none';
+}
+
+function showNotifications() {
+  const list = document.getElementById('notifs-list');
+  if (!notifications.length) {
+    list.innerHTML = '<p style="text-align:center;color:var(--text-xs);padding:20px">Aucune notification</p>';
+  } else {
+    list.innerHTML = notifications.map(n => `
+      <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:700">${n.title}</div>
+        <div style="font-size:12px;color:var(--text-s);margin-top:2px">${n.body}</div>
+        <div style="font-size:11px;color:var(--text-xs);margin-top:4px">${new Date(n.ts).toLocaleString('fr-FR')}</div>
+      </div>`).join('');
+  }
+  notifications.forEach(n => n.read = true);
+  lw('notifs', notifications);
+  updateNotifBadge();
+  openModal('modal-notifs');
+}
+
+async function requestNotifPermission() {
+  if (typeof Notification === 'undefined' || !('Notification' in window)) {
+    toast('⚠️ Notifications non supportées sur cet appareil');
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    document.getElementById('notif-perm-btn').textContent = '✅ Activées';
+    safeNotif('Planning Sono 🎙️', 'Notifications activées avec succès !');
+    toast('✅ Notifications activées');
+  } else { toast('❌ Permission refusée'); }
+}
+
+function checkUpcomingReminders() {
+  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+  const settings = ls('settings',{});
+  const now = new Date();
+  Object.entries(planning).forEach(([date, slots]) => {
+    const d = new Date(date + 'T12:00:00');
+    const diff = (d - now) / 86400000;
+    if (diff > 0 && diff <= 1.5 && settings.remind1 !== false) {
+      Object.entries(slots).forEach(([role, mId]) => {
+        const m = membres.find(x => x.id === mId);
+        if (m) safeNotif('⏰ Rappel service demain', `${m.prenom} ${m.initiale} → ${role}`);
+      });
+    }
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   PARAMÈTRES & THÈME
+══════════════════════════════════════════════════════════ */
+function toggleTheme() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+  document.getElementById('theme-btn').textContent = dark ? '🌙' : '☀️';
+  document.getElementById('dark-toggle').checked = !dark;
+  saveSettings();
+}
+function toggleThemeCheck() {
+  const dark = document.getElementById('dark-toggle').checked;
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  document.getElementById('theme-btn').textContent = dark ? '☀️' : '🌙';
+  saveSettings();
+}
+
+function saveSettings() {
+  const settings = ls('settings',{});
+  settings.dark = document.getElementById('dark-toggle').checked;
+  settings.remind7 = document.getElementById('remind7').checked;
+  settings.remind1 = document.getElementById('remind1').checked;
+  settings.windowStart = document.getElementById('window-start').value;
+  settings.windowEnd   = document.getElementById('window-end').value;
+  lw('settings', settings);
+  toast('⚙️ Paramètres enregistrés');
+}
+
+/* ══════════════════════════════════════════════════════════
+   EXPORT / IMPORT / RESET
+══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   VUE HEBDOMADAIRE
+══════════════════════════════════════════════════════════ */
+let currentView = 'list';
+
+function setView(v, btn) {
+  currentView = v;
+  document.getElementById('planning-list').style.display = v === 'list' ? 'block' : 'none';
+  document.getElementById('planning-week').style.display = v === 'week' ? 'block' : 'none';
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (v === 'week') renderWeekView();
+}
+
+function renderWeekView() {
+  const wrap = document.getElementById('planning-week');
+  const dates = getServiceDates(currentYear, currentMonth);
+  if (!dates.length) { wrap.innerHTML = '<p style="color:var(--text-xs);text-align:center;padding:20px">Aucun service ce mois</p>'; return; }
+
+  // Regrouper par semaine (paires mardi+samedi)
+  const weeks = [];
+  let week = [];
+  dates.forEach(d => {
+    week.push(d);
+    if (d.getDay() === 6 || week.length === 2) { weeks.push([...week]); week = []; }
+  });
+  if (week.length) weeks.push(week);
+
+  // Détecter la semaine courante
+  const now = new Date();
+  const todayStr = dateKey(now);
+  let currentWeekIdx = -1;
+  // Chercher la semaine contenant aujourd'hui ou le prochain service
+  weeks.forEach((wk, wi) => {
+    wk.forEach(d => {
+      if (dateKey(d) === todayStr) currentWeekIdx = wi;
+    });
+  });
+  // Si pas trouvé (today n'est pas un jour de service), chercher la prochaine semaine future
+  if (currentWeekIdx === -1) {
+    for (let wi = 0; wi < weeks.length; wi++) {
+      const lastDate = weeks[wi][weeks[wi].length - 1];
+      if (lastDate >= now) { currentWeekIdx = wi; break; }
+    }
+  }
+
+  wrap.innerHTML = weeks.map((wk, wi) => {
+    const isCurrentWeek = wi === currentWeekIdx;
+    let html = `<div style="margin-bottom:14px${isCurrentWeek ? ';outline:2px solid var(--accent);outline-offset:4px;border-radius:var(--radius);padding:2px' : ''}">
+      <div style="font-size:11px;font-weight:700;color:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:flex;align-items:center;gap:6px">
+        Semaine ${wi+1}
+        ${isCurrentWeek ? '<span style="font-size:10px;background:var(--accent);color:#fff;padding:1px 8px;border-radius:10px;font-weight:800">📍 Cette semaine</span>' : ''}
+      </div>
+      <div class="week-view">
+        ${wk.map(d => {
+          const key = dateKey(d);
+          const isSam = d.getDay() === 6;
+          const slots = planning[key] || {};
+          const label = DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()].slice(0,3);
+          const heure = isSam ? '16h30' : '19h00';
+          const rolesHtml = ROLES.map(r => {
+            const mId = slots[r];
+            const m = mId ? membres.find(x => x.id === mId) : null;
+            return `<div class="week-role-row">
+              <span class="week-role-name">${r.replace('Accueil - ','').replace('Perches - ','P.')}</span>
+              ${m ? `<span class="week-member-name">${m.prenom}</span>` : '<span class="week-empty">—</span>'}
+            </div>`;
+          }).join('');
+          return `<div class="week-col">
+            <div class="week-col-title">${isSam?'🟡':'🔵'} ${label} · ${heure}</div>
+            ${rolesHtml}
+          </div>`;
+        }).join('')}
+        ${wk.length === 1 ? '<div class="week-col" style="opacity:.3;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-xs)">—</div>' : ''}
+      </div>
+    </div>`;
+
+    // Bouton Rappel sous la semaine courante
+    if (isCurrentWeek) {
+      html += `<button class="week-rappel-btn" id="btn-rappel-services">📋 Rappel des services</button>`;
+    }
+
+    return html;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════
+   EXPORT PDF
+══════════════════════════════════════════════════════════ */
+async function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  if (!jsPDF) { toast('⚠️ Bibliothèque PDF non chargée'); return; }
+  toast('📄 Génération du PDF…');
+
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const pw = 210, ph = 297, mg = 14;
+  let y = mg;
+
+  const addPage = () => { doc.addPage(); y = mg; };
+  const checkY = (need) => { if (y + need > ph - mg) addPage(); };
+
+  // ── En-tête ──
+  doc.setFillColor(26, 43, 94);
+  doc.rect(0, 0, pw, 22, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(14); doc.setFont('helvetica','bold');
+  doc.text('Planning Sono & Accueil', mg, 10);
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  doc.text(MONTHS[currentMonth] + ' ' + currentYear, mg, 16);
+  doc.text('BeluSoft-Tchapy', pw - mg, 16, { align: 'right' });
+  y = 30;
+
+  // ── Page 1 : Planning du mois ──
+  const dates = getServiceDates(currentYear, currentMonth);
+  doc.setTextColor(26,43,94); doc.setFontSize(11); doc.setFont('helvetica','bold');
+  doc.text('Planning du mois', mg, y); y += 7;
+
+  dates.forEach(d => {
+    const key = dateKey(d);
+    const isSam = d.getDay() === 6;
+    const slots = planning[key] || {};
+    const assigned = Object.values(slots).filter(Boolean).length;
+    checkY(30);
+
+    // Bandeau date
+    doc.setFillColor(isSam ? 253 : 232, isSam ? 246 : 244, isSam ? 213 : 255);
+    doc.rect(mg, y, pw - 2*mg, 7, 'F');
+    doc.setTextColor(26,43,94); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    const label = DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' — ' + (isSam?'16h30':'19h00');
+    doc.text(label, mg+2, y+5);
+    doc.text(`${assigned}/${ROLES.length} attribués`, pw-mg-2, y+5, { align:'right' });
+    y += 8;
+
+    ROLES.forEach(r => {
+      const mId = slots[r]; const m = mId ? membres.find(x => x.id === mId) : null;
+      doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.setTextColor(92, 104, 152);
+      doc.text(r, mg+3, y+3.5);
+      doc.setTextColor(m ? 26:180, m ? 43:180, m ? 94:180);
+      doc.setFont('helvetica', m ? 'bold':'normal');
+      doc.text(m ? m.prenom+' '+m.initiale : '—', mg+95, y+3.5);
+      y += 5.5;
+      checkY(6);
+    });
+    y += 3;
+  });
+
+  // ── Page 2+ : Fiches membres ──
+  doc.addPage(); y = mg;
+  doc.setFillColor(26,43,94); doc.rect(0,0,pw,12,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(11); doc.setFont('helvetica','bold');
+  doc.text('Fiches membres — ' + MONTHS[currentMonth] + ' ' + currentYear, mg, 8);
+  y = 20;
+
+  const mKey = currentYear + '-' + String(currentMonth+1).padStart(2,'0');
+  membres.filter(m => m.actif).forEach(m => {
+    const mySlots = [];
+    dates.forEach(d => {
+      const key = dateKey(d);
+      Object.entries(planning[key]||{}).forEach(([role, mId]) => {
+        if (mId === m.id) mySlots.push({ d, role });
+      });
+    });
+    if (!mySlots.length) return;
+    checkY(12 + mySlots.length * 6);
+
+    doc.setFillColor(232,236,250); doc.rect(mg, y, pw-2*mg, 7, 'F');
+    doc.setTextColor(26,43,94); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    doc.text(m.prenom + ' ' + m.initiale + ' — ' + mySlots.length + ' service(s)', mg+2, y+5);
+    y += 8;
+    mySlots.forEach(s => {
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(60,60,90);
+      const dl = DAYS[s.d.getDay()]+' '+s.d.getDate()+' '+MONTHS[s.d.getMonth()];
+      doc.text('• ' + dl + '  →  ' + s.role, mg+4, y+3.5);
+      y += 5.5;
+    });
+    y += 3;
+  });
+
+  // ── Page suivante : Disponibilités ──
+  doc.addPage(); y = mg;
+  doc.setFillColor(26,43,94); doc.rect(0,0,pw,12,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(11); doc.setFont('helvetica','bold');
+  doc.text('Disponibilités — ' + MONTHS[currentMonth] + ' ' + currentYear, mg, 8);
+  y = 20;
+
+  membres.filter(m => m.actif).forEach(m => {
+    const myDispos = dates.map(d => ({ d, val: dispos[m.id+'_'+dateKey(d)] }))
+      .filter(x => x.val !== undefined);
+    if (!myDispos.length) return;
+    checkY(8 + myDispos.length * 5);
+
+    doc.setFillColor(232,236,250); doc.rect(mg,y,pw-2*mg,6,'F');
+    doc.setTextColor(26,43,94); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text(m.prenom+' '+m.initiale, mg+2, y+4); y += 7;
+    myDispos.forEach(x => {
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+      const dl = DAYS[x.d.getDay()]+' '+x.d.getDate()+' '+MONTHS[x.d.getMonth()];
+      doc.setTextColor(x.val !== false ? 6:229, x.val !== false ? 184:62, x.val !== false ? 109:62);
+      doc.text((x.val !== false ? '✓ ' : '✗ ') + dl, mg+4, y+3);
+      y += 4.5;
+    });
+    y += 2;
+  });
+
+  // Footer sur chaque page
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFontSize(7); doc.setTextColor(180,180,180);
+    doc.text(`Page ${p}/${totalPages} — Planning Sono & Accueil ${currentYear} — BeluSoft-Tchapy`, pw/2, ph-6, { align:'center' });
+  }
+
+  doc.save(`planning_sono_${MONTHS[currentMonth]}_${currentYear}.pdf`);
+  toast('✅ PDF téléchargé');
+}
+
+/* ══════════════════════════════════════════════════════════
+   ATTRIBUTION AMELIOREE — filtres par rôle
+══════════════════════════════════════════════════════════ */
+let activeRoleFilter = '';
+
+function initAttribFilters() {
+  const bar = document.getElementById('attrib-filter-bar');
+  if (!bar) return;
+  const groups = ['Tous', 'Audio/Vidéo', 'Perches', 'Estrade', 'Accueil'];
+  bar.innerHTML = groups.map((g,i) =>
+    `<button class="role-filter-btn ${i===0?'active':''}" data-filter="${i===0?'':g}">${g}</button>`
+  ).join('');
+}
+
+function filterAttrib(group, btn) {
+  activeRoleFilter = group;
+  document.querySelectorAll('.role-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (selectedAttribDate) renderAttribSlots(selectedAttribDate);
+}
+
+function roleMatchesFilter(role, group) {
+  if (!group || group === 'Tous') return true;
+  if (group === 'Audio/Vidéo') return role === 'Audio' || role === 'Vidéo';
+  if (group === 'Perches') return role.includes('Perches');
+  if (group === 'Estrade') return role.includes('Estrade');
+  if (group === 'Accueil') return role.includes('Accueil');
+  return true;
+}
+
+/* ══════════════════════════════════════════════════════════
+   NOTIFICATIONS INTELLIGENTES
+══════════════════════════════════════════════════════════ */
+// Wrapper sécurisé pour les notifications (iOS Safari ne supporte pas Notification)
+function safeNotif(title, body) {
+  try {
+    if (typeof Notification === 'undefined') return; // iOS Safari
+    if (Notification.permission !== 'granted') return;
+    new Notification(title, { body, icon: '/favicon.ico' });
+  } catch(e) { console.log('Notification non supportée:', e.message); }
+}
+
+function checkSmartNotifications() {
+  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+  const now    = new Date();
+  const todayK = dateKey(now);
+  const slots  = planning[todayK] || {};
+  const sentKey = 'smartNotif_' + todayK;
+  if (ls(sentKey, false)) return;
+
+  const assigned = Object.values(slots).filter(Boolean);
+  if (!assigned.length) return;
+
+  const isSam = now.getDay() === 6;
+  const hService = isSam ? 16 : 19;
+  const mService_ = isSam ? 30 : 0;
+  const serviceTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hService, mService_, 0);
+  const hoursUntil = (serviceTime - now) / 3600000;
+
+  if (hoursUntil > 0 && hoursUntil <= 3) {
+    safeNotif("🎙️ Service aujourd'hui",
+      `${assigned.length} membre(s) assigné(s) — ${isSam?'16h30':'19h00'}`);
+    lw(sentKey, true);
+  }
+}
+
+function checkWeeklySummary() {
+  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+  const now = new Date();
+  if (now.getDay() !== 1) return;
+  const sentKey = 'weekSummary_' + dateKey(now);
+  if (ls(sentKey, false)) return;
+
+  const futureDates = getAllFutureDates().slice(0, 6);
+  const weekServices = futureDates.filter(d => {
+    const diff = (d - now) / 86400000;
+    return diff >= 0 && diff <= 7;
+  });
+  if (!weekServices.length) return;
+
+  safeNotif('📋 Résumé hebdo',
+    `${weekServices.length} service(s) cette semaine — ouvrez l'app pour voir le planning`);
+  lw(sentKey, true);
+}
+
+/* ══════════════════════════════════════════════════════════
+   RAPPEL DES SERVICES DU JOUR (copier-coller WhatsApp)
+══════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════
+   RAPPEL SERVICES — Ouverture WhatsApp avec message formaté
+   Admin uniquement (protégé par classe CSS côté lambda)
+══════════════════════════════════════════════════════════ */
+function envoyerRappelServices(dateStr) {
+  const slots = planning[dateStr] || {};
+  const d = new Date(dateStr + 'T12:00:00');
+  const isSam = d.getDay() === 6;
+  const heure = isSam ? '16h30' : '19h00';
+  const dayLabel = DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+
+  // Construire la liste des services attribués
+  const lignes = ROLES
+    .map(role => {
+      const mId = slots[role];
+      const m   = mId ? membres.find(x => x.id === mId) : null;
+      const ico = ROLE_ICONS[role] || '🔹';
+      return m
+        ? `${ico} *${role}* → ${fmtName(m.prenom, m.initiale)}`
+        : null;
+    })
+    .filter(Boolean);
+
+  if (!lignes.length) {
+    toast('ℹ️ Aucun service attribué pour cette date');
+    return;
+  }
+
+  // Message WhatsApp formaté
+  let msg = '🎙️ *Rappel de services — Planning Sono & Accueil*\n';
+  msg += `📅 *${dayLabel} — ${heure}*\n\n`;
+  msg += 'Bonjour,\n\nVoici les services prévus :\n\n';
+  msg += lignes.join('\n');
+
+  // Absences signalées pour cette date
+  const dayAbs = absences.filter(a => a.date === dateStr);
+  if (dayAbs.length) {
+    msg += '\n\n🚫 *Absences signalées :*\n';
+    dayAbs.forEach(a => {
+      const m = membres.find(x => x.id === a.membreId);
+      msg += `  • ${m ? fmtName(m.prenom, m.initiale) : '?'}`;
+      if (a.raison) msg += ' — ' + a.raison;
+      msg += '\n';
+    });
+  }
+
+  msg += '\nMerci d'être présents et ponctuels ! 🙏';
+  msg += '\n— _Planning Sono & Accueil — BeluSoft-Tchapy_';
+
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  toast('📱 Rappel WhatsApp ouvert');
+}
+
+function rappelServices() {
+  const now   = new Date();
+  const today = dateKey(now);
+  const slots = planning[today];
+
+  // Chercher le prochain service si rien aujourd'hui
+  let targetDate = today;
+  let targetSlots = slots;
+  let targetD = now;
+
+  if (!targetSlots || !Object.keys(targetSlots).length) {
+    // Chercher le prochain service à venir
+    const futureDates = getAllFutureDates();
+    for (const fd of futureDates) {
+      const fk = dateKey(fd);
+      if (planning[fk] && Object.keys(planning[fk]).length) {
+        targetDate = fk;
+        targetSlots = planning[fk];
+        targetD = fd;
+        break;
+      }
+    }
+  }
+
+  if (!targetSlots || !Object.keys(targetSlots).length) {
+    toast('ℹ️ Aucun service programmé prochainement');
+    return;
+  }
+
+  const isSam   = targetD.getDay() === 6;
+  const heure   = isSam ? '16h30' : '19h00';
+  const dateStr = `${DAYS[targetD.getDay()]} ${targetD.getDate()} ${MONTHS[targetD.getMonth()]} ${targetD.getFullYear()}`;
+  const isToday = targetDate === today;
+
+  // Construire le message
+  let msg = `🎙️ *Planning Sono & Accueil*\n`;
+  msg += `📅 *${isToday ? "Services d'aujourd'hui" : 'Prochain service'}*\n`;
+  msg += `${isSam ? '🟡' : '🔵'} ${dateStr} — ${heure}\n\n`;
+
+  // Liste des attributions par rôle
+  ROLES.forEach(role => {
+    const mId = targetSlots[role];
+    const m = mId ? membres.find(x => x.id === mId) : null;
+    const icon = ROLE_ICONS[role] || '🔹';
+    if (m) {
+      msg += `${icon} *${role}* → ${m.prenom} ${m.initiale}\n`;
+    } else {
+      msg += `${icon} *${role}* → ⚠️ _Non attribué_\n`;
+    }
+  });
+
+  // Absences du jour
+  const dayAbsences = absences.filter(a => a.date === targetDate);
+  if (dayAbsences.length) {
+    msg += `\n🚫 *Absences signalées :*\n`;
+    dayAbsences.forEach(a => {
+      const m = membres.find(x => x.id === a.membreId);
+      msg += `  • ${m ? m.prenom + ' ' + m.initiale : '?'}${a.raison ? ' — ' + a.raison : ''}\n`;
+    });
+  }
+
+  msg += `\nMerci d'être présents et ponctuels ! 🙏\n`;
+  msg += `— _BeluSoft-Tchapy_ 🎙️`;
+
+  document.getElementById('rappel-text').value = msg;
+  openModal('modal-rappel');
+}
+
+function copyRappel() {
+  const text = document.getElementById('rappel-text').value;
+  navigator.clipboard.writeText(text).then(() => {
+    toast('📋 Message copié — collez-le dans WhatsApp !');
+  }).catch(() => {
+    // Fallback pour les navigateurs qui bloquent clipboard
+    document.getElementById('rappel-text').select();
+    document.execCommand('copy');
+    toast('📋 Message copié !');
+  });
+}
+
+function exportCSV() {
+  const rows = [['Date','Type','Rôle','Membre']];
+  Object.entries(planning).forEach(([date, slots]) => {
+    const d = new Date(date+'T12:00:00');
+    const type = d.getDay()===6?'Samedi':'Mardi';
+    Object.entries(slots).forEach(([role,mId]) => {
+      const m = membres.find(x=>x.id===mId);
+      rows.push([date, type, role, m ? m.prenom+' '+m.initiale : '']);
+    });
+  });
+  const csv = rows.map(r => r.join(';')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.download = `planning_sono_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('📥 CSV exporté');
+}
+
+function exportData() {
+  const data = { membres, dispos, planning, absences, exportDate: new Date().toISOString() };
+  const a = document.createElement('a');
+  a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data,null,2));
+  a.download = `planning_sono_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  toast('📥 Données exportées');
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   VALIDATION JSON — Phase 2.C
+   Empêche la corruption par un fichier malformé
+══════════════════════════════════════════════════════════ */
+function validateImportData(data) {
+  const errors = [];
+  if (data.membres !== undefined) {
+    if (!Array.isArray(data.membres)) {
+      errors.push('membres doit être un tableau');
+    } else {
+      data.membres.forEach((m, i) => {
+        if (typeof m.id !== 'number')
+          errors.push('membres['+i+'].id doit être un nombre');
+        if (typeof m.prenom !== 'string' || !m.prenom.trim())
+          errors.push('membres['+i+'].prenom manquant ou invalide');
+        if (!Array.isArray(m.roles))
+          errors.push('membres['+i+'].roles doit être un tableau');
+      });
+    }
+  }
+  if (data.planning !== undefined) {
+    if (typeof data.planning !== 'object' || Array.isArray(data.planning))
+      errors.push('planning doit être un objet');
+    else {
+      Object.keys(data.planning).forEach(dk => {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dk))
+          errors.push('planning: clé invalide "' + dk + '"');
+      });
+    }
+  }
+  if (data.dispos !== undefined && typeof data.dispos !== 'object')
+    errors.push('dispos doit être un objet');
+  if (data.absences !== undefined && !Array.isArray(data.absences))
+    errors.push('absences doit être un tableau');
+  return errors;
+}
+
+function importDataFile() { document.getElementById('import-file').click(); }
+function importData(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      const errors = validateImportData(data);
+      if (errors.length) {
+        toast('❌ Import invalide : ' + errors[0]);
+        console.error('[import validation]', errors);
+        return;
+      }
+      if (data.membres) { membres = data.membres; lw('membres', membres); }
+      if (data.dispos)  { dispos  = data.dispos;  lw('dispos',  dispos);  }
+      if (data.planning){ planning= data.planning; lw('planning',planning);}
+      if (data.absences){ absences= data.absences; lw('absences',absences);}
+      renderPlanning(); renderMembers(); populateMemberSelect(); populateMyPlanSelect();
+      toast('✅ Données importées avec succès');
+    } catch { toast('❌ Fichier JSON invalide'); }
+  };
+  reader.readAsText(file);
+}
+
+function resetData() {
+  if (!confirm('⚠️ Supprimer TOUTES les données locales ? Cette action est irréversible.')) return;
+  ['membres','dispos','planning','absences','notifs'].forEach(k => localStorage.removeItem(k));
+  membres = [...MEMBRES_DEFAUT]; dispos = {}; planning = {}; absences = []; notifications = [];
+  renderPlanning(); renderMembers(); populateMemberSelect(); populateMyPlanSelect();
+  toast('🗑️ Données réinitialisées');
+}
+
+/* ══════════════════════════════════════════════════════════
+   UTILITAIRES
+══════════════════════════════════════════════════════════ */
+function toast(msg, dur=2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+
+/* ══════════════════════════════════════════════════════════
+   PBKDF2 — Dérivation de mot de passe renforcée Phase 2.B
+   Sel fixe + 100 000 itérations — anti rainbow tables
+══════════════════════════════════════════════════════════ */
+const ADMIN_SALT = 'BeluSoftSono2026Congrégation';
+
+async function deriveAdminKey(password) {
+  const enc    = new TextEncoder();
+  const keyMat = await crypto.subtle.importKey(
+    'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits({
+    name:       'PBKDF2',
+    salt:       enc.encode(ADMIN_SALT),
+    iterations: 100_000,
+    hash:       'SHA-256',
+  }, keyMat, 256);
+  return [...new Uint8Array(bits)]
+    .map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function installPWA() { if (deferredInstall) { deferredInstall.prompt(); deferredInstall.userChoice.then(()=>{deferredInstall=null; document.getElementById('install-banner').style.display='none';});} }
+
+function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  const swCode = `
+self.addEventListener('install',e=>self.skipWaiting());
+self.addEventListener('activate',e=>e.waitUntil(clients.claim()));
+self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>caches.match(e.request))));
+  `;
+  const blob = new Blob([swCode],{type:'application/javascript'});
+  const url = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(()=>{});
+}
+
+/* PWA Manifest */
+(function(){
+  const manifest = {
+    name:'Planning Sono & Accueil 2026',short_name:'Planning Sono',
+    start_url:'./',display:'standalone',theme_color:'#1A2B5E',
+    background_color:'#F2F5FC',
+    icons:[{src:'https://via.placeholder.com/192/1A2B5E/FFFFFF?text=PS',sizes:'192x192',type:'image/png'}]
+  };
+  const blob = new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+  const link = document.createElement('link');
+  link.rel='manifest'; link.href=URL.createObjectURL(blob);
+  document.head.appendChild(link);
+})();
+
+/* ══════════════════════════════════════════════════════════
+   DÉMARRAGE
+══════════════════════════════════════════════════════════ */
+// Fix iOS Safari 100vh (barre d'adresse variable)
+function fixIOSHeight() {
+  const h = window.innerHeight;
+  document.documentElement.style.setProperty('--app-height', h + 'px');
+}
+fixIOSHeight();
+window.addEventListener('resize', fixIOSHeight);
+window.addEventListener('orientationchange', () => setTimeout(fixIOSHeight, 300));
+
+document.addEventListener('DOMContentLoaded', init);
+
+/* ══════════════════════════════════════════════════════════
+   GESTIONNAIRES D'ÉVÉNEMENTS — addEventListener ONLY
+   0 handler inline dans le HTML — CSP A+ compliant
+   Planning Sono & Accueil V8 — BeluSoft-Tchapy © 2026
+══════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function() {
+
+  /* ── Header ── */
+  var btnNotifs = document.getElementById('btn-notifs');
+  if (btnNotifs) btnNotifs.addEventListener('click', showNotifications);
+  var btnTheme  = document.getElementById('btn-theme');
+  if (btnTheme)  btnTheme.addEventListener('click', toggleTheme);
+
+  /* ── PWA ── */
+  var btnInstall = document.getElementById('btn-install-pwa');
+  if (btnInstall) btnInstall.addEventListener('click', installPWA);
+  var btnCloseInstall = document.getElementById('btn-close-install');
+  if (btnCloseInstall) btnCloseInstall.addEventListener('click', function(){
+    document.getElementById('install-banner').style.display='none';
+  });
+
+  /* ── Navigation tabs ── */
+  document.querySelectorAll('.nav-btn[data-tab]').forEach(function(btn) {
+    btn.addEventListener('click', function(){ switchTab(this.dataset.tab, this); });
+  });
+
+  /* ── Planning ── */
+  var btnPrev = document.getElementById('btn-month-prev');
+  if (btnPrev) btnPrev.addEventListener('click', function(){ changeMonth(-1); });
+  var btnNext = document.getElementById('btn-month-next');
+  if (btnNext) btnNext.addEventListener('click', function(){ changeMonth(1); });
+  var btnExportPDF = document.getElementById('btn-export-pdf');
+  if (btnExportPDF) btnExportPDF.addEventListener('click', exportPDF);
+  var btnRappelServices = document.getElementById('btn-rappel-services');
+  if (btnRappelServices) btnRappelServices.addEventListener('click', rappelServices);
+  document.querySelectorAll('[data-view]').forEach(function(btn){
+    btn.addEventListener('click', function(){ setView(this.dataset.view, this); });
+  });
+
+  /* ── Disponibilités ── */
+  var dispoSel = document.getElementById('dispo-member-select');
+  if (dispoSel) dispoSel.addEventListener('change', onMemberSelect);
+  var myPlanSel = document.getElementById('myplan-member-select');
+  if (myPlanSel) myPlanSel.addEventListener('change', onMyPlanSelect);
+  var btnAbsence = document.getElementById('btn-declare-absence');
+  if (btnAbsence) btnAbsence.addEventListener('click', declareAbsence);
+  var btnSaveDispo = document.getElementById('btn-save-dispo');
+  if (btnSaveDispo) btnSaveDispo.addEventListener('click', saveDispo);
+
+  /* ── Attribution ── */
+  var adminPwInput = document.getElementById('admin-pw-input');
+  if (adminPwInput) adminPwInput.addEventListener('keydown', function(e){
+    if (e.key==='Enter') checkAdmin();
+  });
+  var btnCheckAdmin = document.getElementById('btn-check-admin');
+  if (btnCheckAdmin) btnCheckAdmin.addEventListener('click', checkAdmin);
+  var btnAutoAssign = document.getElementById('btn-auto-assign');
+  if (btnAutoAssign) btnAutoAssign.addEventListener('click', autoAssign);
+  var btnSaveAttrib = document.getElementById('btn-save-attribution');
+  if (btnSaveAttrib) btnSaveAttrib.addEventListener('click', saveAttribution);
+  var btnRemindAll  = document.getElementById('btn-remind-all');
+  if (btnRemindAll)  btnRemindAll.addEventListener('click', function(){ sendReminders('all'); });
+  var btnRemindWeek = document.getElementById('btn-remind-week');
+  if (btnRemindWeek) btnRemindWeek.addEventListener('click', function(){ sendReminders('week'); });
+  var btnRemindGroup = document.getElementById('btn-remind-group');
+  if (btnRemindGroup) btnRemindGroup.addEventListener('click', sendGroupReminder);
+  var btnAutoReminder = document.getElementById('btn-auto-reminder');
+  if (btnAutoReminder) btnAutoReminder.addEventListener('click', scheduleAutoReminder);
+  var btnExportCSV = document.getElementById('btn-export-csv');
+  if (btnExportCSV) btnExportCSV.addEventListener('click', exportCSV);
+
+  /* ── Membres ── */
+  var btnAddMember = document.getElementById('add-member-btn');
+  if (btnAddMember) btnAddMember.addEventListener('click', openAddMember);
+  var memberSearch = document.getElementById('member-search');
+  if (memberSearch) memberSearch.addEventListener('input', renderMembers);
+  var btnCancelMember = document.getElementById('btn-cancel-member');
+  if (btnCancelMember) btnCancelMember.addEventListener('click', function(){ closeModal('modal-member'); });
+  var btnSaveMember = document.getElementById('btn-save-member');
+  if (btnSaveMember) btnSaveMember.addEventListener('click', saveMember);
+
+  /* ── Stats ── */
+  var statsMonthSel = document.getElementById('stats-month-select');
+  if (statsMonthSel) statsMonthSel.addEventListener('change', renderStats);
+  var btnExportStats = document.getElementById('btn-export-stats');
+  if (btnExportStats) btnExportStats.addEventListener('click', exportStatsToSheets);
+
+  /* ── Paramètres ── */
+  var darkToggle = document.getElementById('dark-toggle');
+  if (darkToggle) darkToggle.addEventListener('change', toggleThemeCheck);
+  var remind7 = document.getElementById('remind7');
+  if (remind7)  remind7.addEventListener('change', saveSettings);
+  var remind1 = document.getElementById('remind1');
+  if (remind1)  remind1.addEventListener('change', saveSettings);
+  var btnSaveGas = document.getElementById('btn-save-gas');
+  if (btnSaveGas) btnSaveGas.addEventListener('click', saveGasUrl);
+  var btnTestGas = document.getElementById('btn-test-gas');
+  if (btnTestGas) btnTestGas.addEventListener('click', testGasUrl);
+  var btnSyncDrive = document.getElementById('btn-sync-drive');
+  if (btnSyncDrive) btnSyncDrive.addEventListener('click', syncFromDrive);
+  var notifPermBtn = document.getElementById('notif-perm-btn');
+  if (notifPermBtn) notifPermBtn.addEventListener('click', requestNotifPermission);
+  var btnAdminToggle = document.getElementById('admin-toggle-btn');
+  if (btnAdminToggle) btnAdminToggle.addEventListener('click', toggleAdmin);
+  var btnSaveSettings = document.getElementById('btn-save-settings');
+  if (btnSaveSettings) btnSaveSettings.addEventListener('click', saveSettings);
+  var btnWaInstr = document.getElementById('btn-wa-instructions');
+  if (btnWaInstr) btnWaInstr.addEventListener('click', openWaInstructions);
+  var btnExportData = document.getElementById('btn-export-data');
+  if (btnExportData) btnExportData.addEventListener('click', exportData);
+  var btnImportData = document.getElementById('btn-import-data');
+  if (btnImportData) btnImportData.addEventListener('click', importDataFile);
+  var btnResetData = document.getElementById('btn-reset-data');
+  if (btnResetData) btnResetData.addEventListener('click', resetData);
+  var importFile = document.getElementById('import-file');
+  if (importFile) importFile.addEventListener('change', importData);
+
+  /* ── Overlay mot de passe ── */
+  var paramsPwInput = document.getElementById('params-pw-input');
+  if (paramsPwInput) paramsPwInput.addEventListener('keydown', function(e){
+    if (e.key==='Enter') checkParamsPassword();
+  });
+  var btnClosePwOverlay = document.getElementById('btn-close-pw-overlay');
+  if (btnClosePwOverlay) btnClosePwOverlay.addEventListener('click', closeParamsPwOverlay);
+  var btnCheckParamsPw = document.getElementById('btn-check-params-pw');
+  if (btnCheckParamsPw) btnCheckParamsPw.addEventListener('click', checkParamsPassword);
+
+  /* ── Modals ── */
+  var btnCloseNotifs = document.getElementById('btn-close-notifs');
+  if (btnCloseNotifs) btnCloseNotifs.addEventListener('click', function(){ closeModal('modal-notifs'); });
+  var btnCloseRappel = document.getElementById('btn-close-rappel');
+  if (btnCloseRappel) btnCloseRappel.addEventListener('click', function(){ closeModal('modal-rappel'); });
+  var btnCopyRappel = document.getElementById('btn-copy-rappel');
+  if (btnCopyRappel) btnCopyRappel.addEventListener('click', copyRappel);
+  document.querySelectorAll('.modal-overlay').forEach(function(o){
+    o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('open'); });
+  });
+
+  /* ── Délégation pour éléments générés dynamiquement ── */
+  document.addEventListener('click', function(e) {
+    /* Filtres attribution */
+    var filterBtn = e.target.closest('.role-filter-btn[data-filter]');
+    if (filterBtn) { filterAttrib(filterBtn.dataset.filter, filterBtn); return; }
+    /* Date chip attribution */
+    var dateChip = e.target.closest('.date-chip[data-key]');
+    if (dateChip) { selectAttribDate(dateChip.dataset.key, dateChip); return; }
+    /* Bouton remplacement */
+    var replBtn = e.target.closest('.replace-btn[data-dk]');
+    if (replBtn) { applyReplacement(replBtn.dataset.dk, replBtn.dataset.role, parseInt(replBtn.dataset.mid)); return; }
+    /* Edit membre */
+    var editBtn = e.target.closest('[data-edit-id]');
+    if (editBtn) { editMember(parseInt(editBtn.dataset.editId)); return; }
+    /* Delete membre */
+    var delBtn = e.target.closest('[data-del-id]');
+    if (delBtn) { deleteMember(parseInt(delBtn.dataset.delId)); return; }
+    /* Toggle indisponibilité (nouveau système) */
+    const dispoBtn = e.target.closest('.dispo-indisp-btn[data-dispo-key]');
+    if (dispoBtn) { toggleDispoNative(dispoBtn.dataset.dispoKey, dispoBtn); return; }
+  });
+
+  /* Délégation change pour selects attribution */
+  document.addEventListener('change', function(e) {
+    var sel = e.target.closest('.attrib-select[data-role][data-date-key]');
+    if (sel) { updateSlot(sel.dataset.dateKey, sel.dataset.role, sel.value); return; }
+  });
+
+});
+
+</script>
+</body>
+</html>
