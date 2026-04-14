@@ -1,0 +1,32 @@
+# ================================================================
+# netlify.toml — Planning Sono & Accueil V8
+# BeluSoft-Tchapy © 2026 · Luc BERGAME
+# ✅ 0 handler inline · CSP A+ · Proxy GAS sécurisé
+# ================================================================
+
+[build]
+  publish   = "."
+  functions = "functions"
+
+[[redirects]]
+  from = "/" ; to = "/index.html" ; status = 200
+[[redirects]]
+  from = "/.env" ; to = "/index.html" ; status = 404 ; force = true
+[[redirects]]
+  from = "/.git/*" ; to = "/index.html" ; status = 404 ; force = true
+[[redirects]]
+  from = "/netlify.toml" ; to = "/index.html" ; status = 404 ; force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-RFhHXzxq0c4ysbEuG8ZLYY2hz2QUMRwEMMnrFuw17fE=' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://via.placeholder.com; connect-src 'self' https://api.callmebot.com; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self' blob:; worker-src 'self' blob:; upgrade-insecure-requests;"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "0"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "notifications=(self), geolocation=(), camera=(), microphone=(), payment=()"
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    Cross-Origin-Resource-Policy = "same-origin"
+    Cache-Control = "no-cache, no-store, must-revalidate"
