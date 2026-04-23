@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Planning Sono">
 <meta name="description" content="Planning Sono & Accueil — Congrégation 2026">
-<title>Planning Sono & Accueil — V8</title>
+<title>Planning Sono & Accueil — V7</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lato:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
 
@@ -459,46 +459,6 @@ a{color:var(--primary-l);text-decoration:none}
 }
 .switch input:checked + .switch-slider{background:var(--success)}
 .switch input:checked + .switch-slider::after{transform:translateX(20px)}
-
-/* ── DISPONIBILITÉS NATIVES — Logique indisponibilités ── */
-.dispo-intro{background:var(--success-l);border:1.5px solid var(--success);
-  border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;font-size:13px;color:var(--text)}
-.dispo-intro strong{color:var(--success)}
-.dispo-month-label{font-size:11px;font-weight:700;color:var(--text-xs);
-  text-transform:uppercase;letter-spacing:.8px;margin:12px 0 6px;padding-left:2px}
-.dispo-row{display:flex;align-items:center;gap:12px;padding:10px 0;
-  border-bottom:.5px solid var(--border)}
-.dispo-row:last-child{border-bottom:none}
-.dispo-row-info{flex:1}
-.dispo-row-date{font-size:13px;font-weight:700;color:var(--text)}
-.dispo-row-type{font-size:11px;color:var(--text-s);margin-top:2px}
-.dispo-indisp-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;
-  border-radius:20px;border:1.5px solid var(--border);background:var(--surface2);
-  font-size:12px;font-weight:600;color:var(--text-s);cursor:pointer;transition:.2s;
-  white-space:nowrap}
-.dispo-indisp-btn.checked{background:var(--danger-l);border-color:var(--danger);
-  color:var(--danger)}
-.dispo-indisp-btn::before{content:'✅';margin-right:2px}
-.dispo-indisp-btn.checked::before{content:'❌'}
-.dispo-save-bar{position:sticky;bottom:calc(var(--nav-h)+8px);
-  background:var(--surface);border-top:1px solid var(--border);
-  padding:12px 0 6px;margin-top:14px}
-
-
-/* ── RAPPEL SERVICES — Bouton WhatsApp ── */
-.btn-rappel-service {
-  display:flex;align-items:center;justify-content:center;gap:7px;
-  width:100%;padding:9px 14px;border-radius:var(--radius-s);border:none;
-  background:#25D366;color:#fff;font-family:var(--font);font-size:12px;
-  font-weight:700;cursor:pointer;transition:.2s;margin-top:10px;
-}
-.btn-rappel-service:hover{background:#22c55e}
-.btn-rappel-service:active{transform:scale(0.97)}
-.btn-rappel-service.disabled-lambda{
-  background:var(--border);color:var(--text-xs);
-  cursor:not-allowed;pointer-events:none;opacity:.45;
-}
-
 </style>
 </head>
 <body>
@@ -509,15 +469,15 @@ a{color:var(--primary-l);text-decoration:none}
   <div id="header">
     <div>
       <h1>🎙 Planning Sono & Accueil</h1>
-      <small id="header-sub">Congrégation · V8</small>
+      <small id="header-sub">Congrégation · V7</small>
     </div>
     <div class="header-actions">
       <div style="position:relative">
-        <button class="icon-btn" id="btn-notifs" title="Notifications">🔔
+        <button class="icon-btn" onclick="showNotifications()" title="Notifications">🔔
           <span class="notif-badge" id="notif-count" style="display:none">0</span>
         </button>
       </div>
-      <button class="icon-btn" id="btn-theme" title="Thème">🌙</button>
+      <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Thème">🌙</button>
     </div>
   </div>
 
@@ -528,8 +488,8 @@ a{color:var(--primary-l);text-decoration:none}
     <div id="tab-planning" class="tab-panel active">
       <div id="install-banner" style="display:none">
         📱 <span>Installer l'app sur votre écran d'accueil</span>
-        <button id="btn-install-pwa">Installer</button>
-        <button id="btn-close-install" style="background:transparent;font-size:16px">✕</button>
+        <button onclick="installPWA()">Installer</button>
+        <button onclick="document.getElementById('install-banner').style.display='none'" style="background:transparent;font-size:16px">✕</button>
       </div>
 
       <div id="sync-bar" class="sync-none">
@@ -542,8 +502,8 @@ a{color:var(--primary-l);text-decoration:none}
           <div class="planning-month" id="plan-month">Mars 2026</div>
         </div>
         <div style="display:flex;gap:8px">
-          <button class="icon-btn" id="btn-month-prev" style="background:var(--border);color:var(--text);width:32px;height:32px;font-size:14px">◀</button>
-          <button class="icon-btn" id="btn-month-next" style="background:var(--border);color:var(--text);width:32px;height:32px;font-size:14px">▶</button>
+          <button class="icon-btn" onclick="changeMonth(-1)" style="background:var(--border);color:var(--text);width:32px;height:32px;font-size:14px">◀</button>
+          <button class="icon-btn" onclick="changeMonth(1)" style="background:var(--border);color:var(--text);width:32px;height:32px;font-size:14px">▶</button>
         </div>
       </div>
 
@@ -570,7 +530,7 @@ a{color:var(--primary-l);text-decoration:none}
         <div class="card" style="padding:12px">
           <div class="card-title">👤 Mon planning du mois</div>
           <div class="myplan-select-wrap">
-            <select class="input-field" id="myplan-member-select">
+            <select class="input-field" id="myplan-member-select" onchange="onMyPlanSelect()">
               <option value="">— Sélectionnez votre nom —</option>
             </select>
           </div>
@@ -588,60 +548,52 @@ a{color:var(--primary-l);text-decoration:none}
       </div>
 
       <div class="view-toggle">
-        <button class="view-btn active" id="view-list-btn" id="view-list-btn" data-view="list">📋 Liste</button>
-        <button class="view-btn" id="view-week-btn" id="view-week-btn" data-view="week">📅 Hebdo</button>
+        <button class="view-btn" id="view-list-btn" onclick="setView('list',this)">📋 Liste</button>
+        <button class="view-btn active" id="view-week-btn" onclick="setView('week',this)">📅 Hebdo</button>
       </div>
-      <div id="planning-list"><!-- rendered by JS --></div>
-      <div id="planning-week" style="display:none"></div>
+      <div id="planning-list" style="display:none"><!-- rendered by JS --></div>
+      <div id="planning-week"></div>
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn btn-outline" style="flex:1" id="btn-export-pdf">📄 Exporter PDF</button>
+        <button class="btn btn-outline" style="flex:1" onclick="exportPDF()">📄 Exporter PDF</button>
       </div>
       <div style="height:10px"></div>
     </div>
 
-        <!-- ═══ TAB DISPONIBILITÉS ═══ -->
+    <!-- ═══ TAB DISPONIBILITÉS ═══ -->
     <div id="tab-dispos" class="tab-panel">
-      <div class="section-title">📋 Mes Disponibilités</div>
-      <div class="section-sub">Indiquez vos <strong>indisponibilités</strong> — tout jour non coché = vous êtes disponible ✅</div>
+      <div class="section-title">🚫 Mes Indisponibilités</div>
+      <div class="section-sub">Cochez uniquement les dates où vous <strong>n'êtes PAS disponible</strong>.<br><span style="color:var(--success);font-weight:600">Tout jour non coché = disponible automatiquement.</span><br><span style="font-size:11px;color:var(--text-xs)">🔒 Seul votre prénom est transmis (RGPD).</span></div>
 
-      <!-- Sélection du membre -->
-      <div class="card" style="padding:14px;margin-bottom:10px">
-        <label class="label">👤 Votre nom</label>
-        <select class="input-field" id="dispo-member-select">
-          <option value="">— Sélectionnez votre nom —</option>
-        </select>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;justify-content:center">
+        <button id="btnRefreshIndispos" class="btn btn-accent btn-sm" onclick="refreshIndispos()">
+          🔄 Rafraîchir indispos
+        </button>
+        <a href="https://belusoft.github.io/indispos-sono-2026/" target="_blank"
+           class="btn btn-outline btn-sm" style="text-decoration:none">
+          ↗ Ouvrir Mes Indispos en plein écran
+        </a>
       </div>
 
-      <!-- Fenêtre fermée hors 20-28 (lambda uniquement) -->
-      <div id="dispo-window-warning" class="card" style="text-align:center;padding:20px;display:none">
-        <div style="font-size:32px;margin-bottom:8px">🔒</div>
-        <p style="font-size:14px;font-weight:700;color:var(--text)">Saisie non disponible actuellement</p>
-        <p style="font-size:12px;color:var(--text-s);margin-top:6px">La saisie des disponibilités est ouverte du <strong>20 au 28</strong> de chaque mois.</p>
-        <p id="next-window-msg" style="font-size:12px;color:var(--text-xs);margin-top:4px"></p>
+      <div class="card" style="padding:10px;overflow:hidden">
+        <iframe
+          id="dispo-form-iframe"
+          src="https://belusoft.github.io/indispos-sono-2026/"
+          style="width:100%;border:none;border-radius:var(--radius-s);min-height:500px"
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+          loading="lazy"
+          title="Mes Indispos">
+          Chargement…
+        </iframe>
       </div>
 
-      <!-- Formulaire natif — affiché quand membre sélectionné et fenêtre ouverte -->
-      <div id="dispo-form-wrap" style="display:none">
-        <div class="dispo-intro">
-          ℹ️ <strong>Principe :</strong> Tous les mardis et samedis du mois sont <strong>disponibles par défaut</strong>.<br>
-          Cochez uniquement les dates où vous <strong>ne pouvez pas être présent(e)</strong>.
-        </div>
-
-        <!-- Les dates du mois suivant seront injectées ici -->
-        <div id="dispo-dates-container" class="card" style="padding:14px"></div>
-
-        <div class="dispo-save-bar">
-          <button class="btn btn-success btn-full" id="btn-save-dispo">
-            ✅ Enregistrer mes disponibilités
-          </button>
-        </div>
-        <div class="rgpd-note" style="margin-top:6px">
-          🔒 Données utilisées uniquement pour la planification des services.
-        </div>
-      </div>
+      <p style="font-size:11px;color:var(--text-xs);text-align:center;margin-top:8px">
+        📋 Les réponses des frères sont saisies dans <strong>Mes Indispos</strong> puis lues automatiquement par le Planning Sono & Accueil.
+      </p>
     </div>
 
-    <!-- ═══ TAB ATTRIBUTION<!-- ═══ TAB ATTRIBUTION (ADMIN) ═══ -->
+    <!-- ═══ TAB ATTRIBUTION (ADMIN) ═══ -->
     <div id="tab-attribution" class="tab-panel">
       <div class="section-header">
         <div class="section-title">📋 Attribution</div>
@@ -654,8 +606,8 @@ a{color:var(--primary-l);text-decoration:none}
         <p style="font-size:14px;font-weight:600;color:var(--text)">Espace administrateur</p>
         <p style="font-size:13px;color:var(--text-s);margin:8px 0 16px">Entrez le mot de passe pour accéder à la gestion des attributions.</p>
         <div style="display:flex;gap:8px">
-          <input type="password" class="input-field" id="admin-pw-input" placeholder="Votre mot de passe personnel" id="admin-pw-input">
-          <button class="btn btn-primary" id="btn-check-admin">OK</button>
+          <input type="password" class="input-field" id="admin-pw-input" placeholder="Votre mot de passe personnel" onkeydown="if(event.key==='Enter')checkAdmin()">
+          <button class="btn btn-primary" onclick="checkAdmin()">OK</button>
         </div>
       </div>
 
@@ -672,12 +624,12 @@ a{color:var(--primary-l);text-decoration:none}
             <div id="attrib-dispo-summary" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;font-weight:600"></div>
             <div id="conflict-banner" class="conflict-banner">⚠️ <span id="conflict-count"></span></div>
             <div class="attrib-filter-bar" id="attrib-filter-bar">
-              <button class="role-filter-btn active" data-filter="">Tous</button>
+              <button class="role-filter-btn active" onclick="filterAttrib('',this)">Tous</button>
             </div>
             <div id="attrib-slots-list"><!-- slots --></div>
             <div style="display:flex;gap:8px;margin-top:12px">
-              <button class="btn btn-outline btn-sm" id="btn-auto-assign">⚡ Auto-attribuer</button>
-              <button class="btn btn-success btn-sm" id="btn-save-attribution">💾 Sauvegarder</button>
+              <button class="btn btn-outline btn-sm" onclick="autoAssign()">⚡ Auto-attribuer</button>
+              <button class="btn btn-success btn-sm" onclick="saveAttribution()">💾 Sauvegarder</button>
             </div>
           </div>
 
@@ -691,11 +643,11 @@ a{color:var(--primary-l);text-decoration:none}
           <div class="card-title">📢 Envoyer les notifications</div>
           <p style="font-size:12px;color:var(--text-s);margin-bottom:10px">Envoie un rappel WhatsApp (CallMeBot) à tous les membres assignés.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-outline btn-sm" id="btn-remind-all">📱 Rappel J-7 (tous)</button>
-            <button class="btn btn-outline btn-sm" id="btn-remind-week">📱 Rappel J-1</button>
-            <button class="btn btn-outline btn-sm" id="btn-remind-group">📱 Rappel J-0 (aujourd'hui)</button>
-            <button class="btn btn-outline btn-sm" id="btn-auto-reminder">⏰ Auto 2h avant</button>
-            <button class="btn btn-primary btn-sm" id="btn-export-csv">📥 Export CSV</button>
+            <button class="btn btn-outline btn-sm" onclick="sendReminders('all')">📱 Rappel J-7 (tous)</button>
+            <button class="btn btn-outline btn-sm" onclick="sendReminders('week')">📱 Rappel J-1</button>
+            <button class="btn btn-outline btn-sm" onclick="sendGroupReminder()">📱 Rappel J-0 (aujourd'hui)</button>
+            <button class="btn btn-outline btn-sm" onclick="scheduleAutoReminder()">⏰ Auto 2h avant</button>
+            <button class="btn btn-primary btn-sm" onclick="exportCSV()">📥 Export CSV</button>
           </div>
         </div>
       </div>
@@ -705,11 +657,11 @@ a{color:var(--primary-l);text-decoration:none}
     <div id="tab-membres" class="tab-panel">
       <div class="section-header">
         <div class="section-title">👥 Membres</div>
-        <button class="btn btn-accent btn-sm" id="add-member-btn" id="add-member-btn" style="display:none">+ Ajouter</button>
+        <button class="btn btn-accent btn-sm" id="add-member-btn" onclick="openAddMember()" style="display:none">+ Ajouter</button>
       </div>
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
-        <input class="input-field" id="member-search" placeholder="Rechercher un membre…" id="member-search">
+        <input class="input-field" id="member-search" placeholder="Rechercher un membre…" oninput="renderMembers()">
       </div>
       <div id="membres-list"><!-- rendered --></div>
     </div>
@@ -733,10 +685,10 @@ a{color:var(--primary-l);text-decoration:none}
 
       <div class="card" style="margin-top:12px">
         <div class="card-title">📅 Filtre</div>
-        <select class="input-field" id="stats-month-select" id="stats-month-select" style="margin-top:6px"></select>
+        <select class="input-field" id="stats-month-select" onchange="renderStats()" style="margin-top:6px"></select>
       </div>
 
-      <button class="btn btn-outline btn-full" style="margin-top:12px" id="btn-export-stats">
+      <button class="btn btn-outline btn-full" style="margin-top:12px" onclick="exportStatsToSheets()">
         ☁️ Exporter vers Google Sheets
       </button>
     </div>
@@ -754,7 +706,7 @@ a{color:var(--primary-l);text-decoration:none}
             <div class="param-desc">Interface en thème nuit</div>
           </div>
           <label class="switch">
-            <input type="checkbox" id="dark-toggle" id="dark-toggle">
+            <input type="checkbox" id="dark-toggle" onchange="toggleThemeCheck()">
             <span class="switch-slider"></span>
           </label>
         </div>
@@ -770,9 +722,9 @@ a{color:var(--primary-l);text-decoration:none}
           <p style="font-size:11px;color:var(--text-xs);margin-top:4px">URL par défaut intégrée dans l'app. Renseignez ce champ uniquement pour utiliser un autre GAS.</p>
         </div>
         <div style="display:flex;gap:8px">
-          <button class="btn btn-primary btn-sm" id="btn-save-gas">💾 Enregistrer</button>
-          <button class="btn btn-outline btn-sm" id="btn-test-gas">🔗 Tester</button>
-          <button class="btn btn-outline btn-sm" id="btn-sync-drive">🔄 Synchroniser</button>
+          <button class="btn btn-primary btn-sm" onclick="saveGasUrl()">💾 Enregistrer</button>
+          <button class="btn btn-outline btn-sm" onclick="testGasUrl()">🔗 Tester</button>
+          <button class="btn btn-outline btn-sm" onclick="syncFromDrive()">🔄 Synchroniser</button>
         </div>
       </div>
 
@@ -784,7 +736,7 @@ a{color:var(--primary-l);text-decoration:none}
             <div class="param-label">Notifications navigateur</div>
             <div class="param-desc">Rappels de services à venir</div>
           </div>
-          <button class="btn btn-outline btn-sm" id="notif-perm-btn">Activer</button>
+          <button class="btn btn-outline btn-sm" onclick="requestNotifPermission()" id="notif-perm-btn">Activer</button>
         </div>
         <div class="param-row">
           <div class="param-info">
@@ -792,7 +744,7 @@ a{color:var(--primary-l);text-decoration:none}
             <div class="param-desc">Notification 7 jours avant</div>
           </div>
           <label class="switch">
-            <input type="checkbox" id="remind7" checked>
+            <input type="checkbox" id="remind7" checked onchange="saveSettings()">
             <span class="switch-slider"></span>
           </label>
         </div>
@@ -802,7 +754,7 @@ a{color:var(--primary-l);text-decoration:none}
             <div class="param-desc">Notification la veille</div>
           </div>
           <label class="switch">
-            <input type="checkbox" id="remind1" checked>
+            <input type="checkbox" id="remind1" checked onchange="saveSettings()">
             <span class="switch-slider"></span>
           </label>
         </div>
@@ -817,7 +769,7 @@ a{color:var(--primary-l);text-decoration:none}
               <div class="param-label">Mode admin</div>
               <div class="param-desc" id="admin-status-text">Non connecté</div>
             </div>
-            <button class="btn btn-outline btn-sm" id="admin-toggle-btn" id="admin-toggle-btn">Se connecter</button>
+            <button class="btn btn-outline btn-sm" id="admin-toggle-btn" onclick="toggleAdmin()">Se connecter</button>
           </div>
         </div>
         <div class="form-group" style="margin-top:10px">
@@ -827,7 +779,7 @@ a{color:var(--primary-l);text-decoration:none}
             <span style="color:var(--text-s)">au</span>
             <input type="number" class="input-field" id="window-end" value="30" min="20" max="31" style="width:80px">
           </div>
-          <button class="btn btn-outline btn-sm" style="margin-top:8px" id="btn-save-settings">Enregistrer</button>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="saveSettings()">Enregistrer</button>
         </div>
 
       </div>
@@ -842,22 +794,43 @@ a{color:var(--primary-l);text-decoration:none}
           <li>Recevoir la clé API par WhatsApp</li>
           <li>Configurer numéro + clé dans la fiche membre</li>
         </ol>
-        <button class="btn btn-success btn-sm" style="margin-top:10px" id="btn-wa-instructions">📋 Copier le message d'activation</button>
+        <button class="btn btn-success btn-sm" style="margin-top:10px" onclick="openWaInstructions()">📋 Copier le message d'activation</button>
+      </div>
+
+      <!-- Disponibilités XLSX -->
+      <div class="card">
+        <div class="card-title">📊 Disponibilités — Fichier XLSX</div>
+        <p style="font-size:12px;color:var(--text-s);margin-bottom:10px">
+          Importez le fichier <strong>Indisponibilités_Sono_Accueil.xlsx</strong> pour mettre à jour les disponibilités automatiquement.
+        </p>
+        <div style="font-size:11px;margin-bottom:10px;display:flex;flex-direction:column;gap:4px">
+          <span>🟢 <strong>Disponible</strong> — attribuable normalement</span>
+          <span>🟠 <strong>Participation *</strong> — attribuable (autre tâche ce jour)</span>
+          <span>🔴 <strong>Indisponible</strong> — ne pas attribuer</span>
+        </div>
+        <div id="xlsx-status" style="font-size:12px;color:var(--text-s);margin-bottom:8px">
+          📋 Données actuelles : <strong id="xlsx-count">152 entrées</strong> (Mai → Juillet 2026)
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-sm" onclick="importXlsxFile()">📥 Importer XLSX</button>
+          <button class="btn btn-outline btn-sm" onclick="showXlsxPreview()">👁️ Aperçu</button>
+        </div>
+        <input type="file" id="xlsx-import-file" style="display:none" accept=".xlsx" onchange="loadXlsxFile(event)">
       </div>
 
       <!-- Données -->
       <div class="card">
         <div class="card-title">💾 Données</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-outline btn-sm" id="btn-export-data">📥 Exporter JSON</button>
-          <button class="btn btn-outline btn-sm" id="btn-import-data">📤 Importer</button>
-          <button class="btn btn-danger btn-sm" id="btn-reset-data">🗑️ Réinitialiser</button>
+          <button class="btn btn-outline btn-sm" onclick="exportData()">📥 Exporter JSON</button>
+          <button class="btn btn-outline btn-sm" onclick="importDataFile()">📤 Importer</button>
+          <button class="btn btn-danger btn-sm" onclick="resetData()">🗑️ Réinitialiser</button>
         </div>
-        <input type="file" id="import-file" style="display:none" accept=".json" id="import-file">
+        <input type="file" id="import-file" style="display:none" accept=".json" onchange="importData(event)">
       </div>
 
       <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--text-xs)">
-        BeluSoft-Tchapy © 2026 · Planning Sono V8<br>
+        BeluSoft-Tchapy © 2026 · Planning Sono V7<br>
         <a href="https://github.com/belusoft" target="_blank">github.com/belusoft</a>
       </div>
     </div>
@@ -866,27 +839,25 @@ a{color:var(--primary-l);text-decoration:none}
 
   <!-- ══ BOTTOM NAV ══ -->
   <nav id="bottom-nav">
-    <button class="nav-btn active" data-tab="planning">
+    <button class="nav-btn active" onclick="switchTab('planning',this)">
       <span class="nav-icon">🗓️</span>Planning
     </button>
-    <button class="nav-btn" data-tab="dispos">
-      <span class="nav-icon">✅</span>Disponibilités
+    <button class="nav-btn" onclick="switchTab('dispos',this)">
+      <span class="nav-icon">🚫</span>Indispos
     </button>
-    <button class="nav-btn" data-tab="attribution">
+    <button class="nav-btn" onclick="switchTab('attribution',this)">
       <span class="nav-icon">📋</span>Attribution
     </button>
-    <button class="nav-btn" data-tab="membres">
+    <button class="nav-btn" onclick="switchTab('membres',this)">
       <span class="nav-icon">👥</span>Membres
     </button>
-    <button class="nav-btn" data-tab="stats">
+    <button class="nav-btn" onclick="switchTab('stats',this)">
       <span class="nav-icon">📊</span>Stats
     </button>
-    <button class="nav-btn" id="nav-params-btn" data-tab="params">
+    <button class="nav-btn" id="nav-params-btn" onclick="switchTab('params',this)">
       <span class="nav-icon">⚙️</span>Paramètres
     </button>
   </nav>
-
-</div><!-- /app -->
 
 <!-- ══ OVERLAY MOT DE PASSE PARAMÈTRES ══ -->
 <div id="params-pw-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);align-items:center;justify-content:center;">
@@ -895,15 +866,16 @@ a{color:var(--primary-l);text-decoration:none}
     <p style="font-weight:700;font-size:15px;text-align:center;margin-bottom:4px" id="pw-overlay-title">Accès administrateur</p>
     <p style="font-size:13px;color:var(--text-s);text-align:center;margin-bottom:16px">Saisissez votre mot de passe personnel pour accéder à cet espace.</p>
     <input type="password" class="input-field" id="params-pw-input" placeholder="Votre mot de passe personnel"
-      id="params-pw-input"
+      onkeydown="if(event.key==='Enter')checkParamsPassword()"
       style="margin-bottom:12px">
     <div style="display:flex;gap:8px">
-      <button class="btn btn-outline" style="flex:1" id="btn-close-pw-overlay">Annuler</button>
-      <button class="btn btn-primary" style="flex:2" id="btn-check-params-pw">🔑 Accéder</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeParamsPwOverlay()">Annuler</button>
+      <button class="btn btn-primary" style="flex:2" onclick="checkParamsPassword()">🔑 Accéder</button>
     </div>
   </div>
 </div>
 
+</div><!-- /app -->
 
 <div id="toast"></div>
 
@@ -933,8 +905,8 @@ a{color:var(--primary-l);text-decoration:none}
       <input class="input-field" id="m-apikey" placeholder="123456">
     </div>
     <div class="modal-actions">
-      <button class="btn btn-outline" style="flex:1" id="btn-cancel-member">Annuler</button>
-      <button class="btn btn-primary" style="flex:2" id="btn-save-member">Enregistrer</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal('modal-member')">Annuler</button>
+      <button class="btn btn-primary" style="flex:2" onclick="saveMember()">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -945,7 +917,7 @@ a{color:var(--primary-l);text-decoration:none}
     <div class="modal-title">🔔 Notifications</div>
     <div id="notifs-list"><!-- notifs --></div>
     <div class="modal-actions">
-      <button class="btn btn-outline btn-full" id="btn-close-notifs">Fermer</button>
+      <button class="btn btn-outline btn-full" onclick="closeModal('modal-notifs')">Fermer</button>
     </div>
   </div>
 </div>
@@ -959,61 +931,16 @@ a{color:var(--primary-l);text-decoration:none}
       line-height:1.6;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-s);
       background:var(--surface2);color:var(--text);resize:vertical;white-space:pre-wrap"></textarea>
     <div class="modal-actions">
-      <button class="btn btn-outline" style="flex:1" id="btn-close-rappel">Fermer</button>
-      <button class="btn btn-accent" style="flex:2" id="btn-copy-rappel">📋 Copier le message</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal('modal-rappel')">Fermer</button>
+      <button class="btn btn-accent" style="flex:2" onclick="copyRappel()">📋 Copier le message</button>
     </div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 'use strict';
-/* ══════════════════════════════════════════════════════════
-   RATE LIMITING — Anti brute-force Phase 2.A
-   Max 3 tentatives · Blocage 30 secondes
-══════════════════════════════════════════════════════════ */
-const AUTH = {
-  MAX_TRIES  : 3,
-  LOCKOUT_MS : 30_000,
-  LS_TRIES   : 'auth_tries',
-  LS_LOCK    : 'auth_locked_until',
-};
-
-function authCheckLock() {
-  const lockedUntil = parseInt(ls(AUTH.LS_LOCK, 0));
-  if (Date.now() < lockedUntil) {
-    const secs = Math.ceil((lockedUntil - Date.now()) / 1000);
-    ['params-pw-input','admin-pw-input'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.disabled = true;
-        el.placeholder = '🔒 Bloqué ' + secs + 's…';
-        setTimeout(() => { el.disabled = false; el.placeholder = 'Votre mot de passe personnel'; }, lockedUntil - Date.now());
-      }
-    });
-    toast('🔒 Trop de tentatives — réessayez dans ' + secs + 's');
-    return false;
-  }
-  return true;
-}
-
-function authRecordFail() {
-  const tries = parseInt(ls(AUTH.LS_TRIES, 0)) + 1;
-  lw(AUTH.LS_TRIES, tries);
-  if (tries >= AUTH.MAX_TRIES) {
-    lw(AUTH.LS_LOCK, Date.now() + AUTH.LOCKOUT_MS);
-    lw(AUTH.LS_TRIES, 0);
-    toast('🔒 3 échecs — accès bloqué 30 secondes');
-  } else {
-    toast('❌ Mot de passe incorrect (' + tries + '/' + AUTH.MAX_TRIES + ')');
-  }
-}
-
-function authRecordSuccess() {
-  lw(AUTH.LS_TRIES, 0);
-  lw(AUTH.LS_LOCK, 0);
-}
-
 /* ══════════════════════════════════════════════════════════
    CONFIGURATION & DONNÉES
 ══════════════════════════════════════════════════════════ */
@@ -1030,17 +957,141 @@ const ROLE_COLORS = {
   'Accueil - Admission Zoom':'#D63031','Accueil - Ouverture':'#E84393','Accueil - Auditorium':'#B2BEC3'
 };
 
-// ── URL proxy Netlify (GAS_URL et GAS_SECRET dans variables d'env) ──
-const PROXY_URL = '/.netlify/functions/gas-proxy';
+// ── URL Google Apps Script (intégrée directement) ──────────────
+const GAS_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbxn2566LZFuxhc4QY2L9ZtGkaryqXn7O5I9lekrUcGBMXTzXgthmtjsmVmIaPmZNhs/exec';
+const GAS_SECRET = 'PlanSono2026!BeluSoft'; // Token partagé avec le GAS
+
+/* ================== INTÉGRATION Mes Indispos (GAS n°1) ================== */
+// URL publique du Web App GAS n°1 — mêmes URL que celle utilisée par l'app mobile Mes Indispos
+const INDISPOS_GAS_URL = 'https://script.google.com/macros/s/AKfycbzgGFKTALtOfCKQU1kXzdy03-ObIiM3JLk79dZV3WF66U2h6_2_iYh2SLLcOAtSxzhd/exec';
+
+// Alias de noms : mapping des noms Mes Indispos → noms Planning
+// (Mes Indispos utilise "Frédérique R." alors que Planning utilise "Frédéric R.")
+const NAME_ALIASES = {
+  'Frédérique R.': 'Frédéric R.'
+};
+
+// Cache localStorage (si Mes Indispos injoignable)
+const LS_INDISPOS_CACHE = 'indispos_cache_v1';
+
+/* ══════════════════════════════════════════════════════════
+   DISPONIBILITÉS XLSX — Source : Indisponibilités_Sono_Accueil
+   Format clé : "Prénom I._YYYY-MM-DD" → "Disponible"|"Indisponible"|"Participation"
+══════════════════════════════════════════════════════════ */
+// Rempli dynamiquement par loadIndisposFromMesIndispos() depuis GAS n°1 Mes Indispos
+let XLSX_DISPOS = {};
+
+// Notes de participation : "Prénom I._YYYY-MM-DD" → "texte de la participation"
+// Rempli dynamiquement par loadIndisposFromMesIndispos()
+let XLSX_PART_NOTES = {};
+
+// Retourne le statut d'un membre pour une date depuis le XLSX
+function getXlsxDispo(membre, dateKey) {
+  const nomApp = membre.prenom + ' ' + membre.initiale;
+  const key = nomApp + '_' + dateKey;
+  return XLSX_DISPOS[key] || null; // null = pas de réponse dans le XLSX
+}
+
+function getXlsxNote(membre, dateKey) {
+  const nomApp = membre.prenom + ' ' + membre.initiale;
+  const key = nomApp + '_' + dateKey;
+  return XLSX_PART_NOTES[key] || null;
+}
+
+/* ================== CHARGEMENT Mes Indispos ================== */
+/**
+ * Charge les indispos depuis Mes Indispos (GAS n°1) et remplit
+ * XLSX_DISPOS + XLSX_PART_NOTES. Met en cache dans localStorage.
+ * Tombe en fallback sur le cache si le réseau échoue.
+ */
+async function loadIndisposFromMesIndispos() {
+  try {
+    const url = INDISPOS_GAS_URL + '?action=getIndispos&t=' + Date.now();
+    const r = await fetch(url, { method: 'GET', cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if (!data || !data.ok) throw new Error('Réponse non OK');
+
+    // Normalise noms via alias
+    const dispos = {};
+    const notes  = {};
+    Object.keys(data.dispos || {}).forEach(function (k) {
+      const idx = k.lastIndexOf('_');
+      if (idx < 0) return;
+      const nom = k.substring(0, idx);
+      const iso = k.substring(idx + 1);
+      const nomNorm = NAME_ALIASES[nom] || nom;
+      dispos[nomNorm + '_' + iso] = data.dispos[k];
+    });
+    Object.keys(data.notes || {}).forEach(function (k) {
+      const idx = k.lastIndexOf('_');
+      if (idx < 0) return;
+      const nom = k.substring(0, idx);
+      const iso = k.substring(idx + 1);
+      const nomNorm = NAME_ALIASES[nom] || nom;
+      notes[nomNorm + '_' + iso] = data.notes[k];
+    });
+
+    // Remplace complètement les objets courants
+    XLSX_DISPOS = dispos;
+    XLSX_PART_NOTES = notes;
+
+    // Sauve cache
+    try {
+      localStorage.setItem(LS_INDISPOS_CACHE, JSON.stringify({
+        dispos: dispos,
+        notes:  notes,
+        lastUpdate: data.lastUpdate || new Date().toISOString()
+      }));
+    } catch (_) {}
+
+    console.log('[Mes Indispos] ✅ chargé :',
+      Object.keys(dispos).length, 'entrées,',
+      Object.keys(notes).length, 'notes');
+    return true;
+  } catch (err) {
+    console.warn('[Mes Indispos] ❌ fetch échoué, tentative cache :', err.message);
+    // Fallback cache
+    try {
+      const raw = localStorage.getItem(LS_INDISPOS_CACHE);
+      if (raw) {
+        const c = JSON.parse(raw);
+        XLSX_DISPOS = c.dispos || {};
+        XLSX_PART_NOTES = c.notes || {};
+        console.log('[Mes Indispos] 💾 cache chargé (lastUpdate=' + c.lastUpdate + ')');
+        return true;
+      }
+    } catch (_) {}
+    return false;
+  }
+}
+
+/** Bouton « 🔄 Rafraîchir indispos » de l'onglet Indispos */
+async function refreshIndispos() {
+  const btn = document.getElementById('btnRefreshIndispos');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Chargement…'; }
+  const ok = await loadIndisposFromMesIndispos();
+  if (btn) { btn.disabled = false; btn.textContent = '🔄 Rafraîchir indispos'; }
+  if (ok && typeof renderPlanning === 'function') renderPlanning();
+  if (ok && typeof selectedAttribDate !== 'undefined' && selectedAttribDate) {
+    if (typeof renderAttribSlots === 'function') renderAttribSlots(selectedAttribDate);
+    if (typeof renderDispoSummary === 'function') renderDispoSummary(selectedAttribDate);
+  }
+  const msg = ok ? '✅ Indispos rafraîchies' : '⚠️ Mes Indispos injoignable';
+  if (typeof toast === 'function') toast(msg);
+  else if (typeof showToast === 'function') showToast(msg);
+  else alert(msg);
+}
+
 
 // Mots de passe individuels des 5 administrateurs (SHA-256)
 // Format : "Toute l'Écriture est inspirée de Dieu - Prénom"
 const ADMIN_HASHES = [
-  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Luc BERGAME
-  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Frédéric RECCHIA
-  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Junior MBOMA
-  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Tevi MPOVI
-  '7a1a01165821ed919836fe701dbfee89ec6df2cc84b75928faaf40be048555b8', // Credo GBEDEDJI
+  'adbaaff47df007af17ff220edd7fb6fdbfca0e482a662a86b246bd17b8de42c9', // Luc BERGAME
+  '1764dc17534bc2ddd99b6f7a95aba776e587777267a5f8b6c64efe626860e142', // Frédéric RECCHIA
+  '26c82aa1bf0ea1c7fb0e3a9fd4ac9c3056b177bae6d3e669cc838a37af999e08', // Junior MBOMA
+  '811f3df6e05431a564f67287e66fb7d41ebb290939be623bb01a1be3b255638c', // Tevi MPOVI
+  '5314522a63d9df6a5c2607091289247212ba7e0c2445e392fb663c47a07de298', // Credo GBEDEDJI
 ];
 function isAdminHash(hash) { return ADMIN_HASHES.includes(hash); }
 
@@ -1102,34 +1153,6 @@ const lw = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch
 /* ══════════════════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════════════════ */
-
-/* ══════════════════════════════════════════════════════════
-   DISPONIBILITÉS PRÉ-INITIALISÉES
-   Avril → Juin 2026 : tous les membres disponibles par défaut
-   (aucune clé = disponible dans la nouvelle logique indisponibilités)
-   Pour compatibilité avec renderAttribSlots : on ne stocke rien
-   → undefined = disponible ✅  /  false = indisponible ❌
-══════════════════════════════════════════════════════════ */
-function initDisposAprilToJune() {
-  // Nouvelle logique : undefined = disponible, false = indisponible
-  // Pour Avril, Mai, Juin 2026 : effacer toutes les indisponibilités
-  // → tous les membres sont disponibles ces mois-là par défaut
-  const toDelete = [];
-  Object.keys(dispos).forEach(k => {
-    const parts = k.split('_');
-    if (parts.length >= 2) {
-      const dateStr = parts[parts.length - 1]; // YYYY-MM-DD
-      if (dateStr >= '2026-04-01' && dateStr <= '2026-06-30') {
-        toDelete.push(k);
-      }
-    }
-  });
-  if (toDelete.length) {
-    toDelete.forEach(k => delete dispos[k]);
-    lw('dispos', dispos);
-  }
-}
-
 async function init() {
   membres  = ls('membres',  MEMBRES_DEFAUT);
   dispos   = ls('dispos',   {});
@@ -1155,6 +1178,10 @@ async function init() {
   checkSmartNotifications();
   checkWeeklySummary();
 
+  // Chargement indispos depuis Mes Indispos (GAS n°1) AVANT le sync Drive
+  setSyncStatus('loading', '🔄 Chargement indispos…');
+  await loadIndisposFromMesIndispos();
+
   // Ping puis sync au démarrage
   setSyncStatus('loading', '🔄 Connexion Drive…');
   await pingAndSync();
@@ -1164,15 +1191,21 @@ async function init() {
   registerSW();
   checkUpcomingReminders();
   scheduleAutoReminder();
+
+  // A1 — Scroll automatique vers la semaine en cours
+  setTimeout(() => {
+    const cw = document.getElementById('current-week-block');
+    if (cw) cw.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 500);
 }
 
 /* ══════════════════════════════════════════════════════════
    GOOGLE DRIVE SYNC (via GAS Web App)
 ══════════════════════════════════════════════════════════ */
 function getGasUrl() {
-  // URL configurable depuis Paramètres (pour override admin)
-  // Par défaut : proxy Netlify (GAS_URL et GAS_SECRET côté serveur uniquement)
-  return ls('settings',{}).gasUrl || PROXY_URL;
+  // L'URL admin en localStorage prend le dessus (permet de changer sans redéployer)
+  // Sinon on utilise l'URL intégrée dans le code
+  return ls('settings',{}).gasUrl || GAS_URL_DEFAULT;
 }
 
 function setSyncStatus(type, msg) {
@@ -1201,6 +1234,10 @@ async function syncFromDrive() {
   const url = getGasUrl();
   if (!url) { setSyncStatus('none','📡 Drive non configuré'); return; }
   setSyncStatus('loading','🔄 Synchronisation en cours…');
+
+  // Rafraîchit également les indispos depuis Mes Indispos (GAS n°1)
+  await loadIndisposFromMesIndispos();
+
   try {
     // Utiliser fetch sans restriction de mode — GAS renvoie les headers CORS
     const res = await fetch(url + '?action=loadAll');
@@ -1225,7 +1262,9 @@ async function pushToDrive(payload) {
   const url = getGasUrl();
   if (!url) return false;
   try {
-    // Le secret est injecté par le proxy Netlify côté serveur
+    // Ajouter le token de sécurité à chaque requête
+    payload.secret = GAS_SECRET;
+
     // IMPORTANT : text/plain évite le preflight CORS que GAS ne gère pas
     const res = await fetch(url, {
       method: 'POST',
@@ -1309,10 +1348,8 @@ let pendingTab = null;
 async function checkParamsPassword() {
   const pw = document.getElementById('params-pw-input').value;
   if (!pw) { toast('⚠️ Saisissez votre mot de passe'); return; }
-  if (!authCheckLock()) return;
-  const hash = await deriveAdminKey(pw);
+  const hash = await sha256(pw);
   if (isAdminHash(hash)) {
-    authRecordSuccess();
     isAdmin = true;
     document.getElementById('attrib-locked').style.display = 'none';
     document.getElementById('attrib-admin').style.display  = 'block';
@@ -1325,7 +1362,7 @@ async function checkParamsPassword() {
     if (pendingTab) { doSwitchTab(pendingTab.name, pendingTab.btn); pendingTab = null; }
     toast('🔑 Mode admin activé');
   } else {
-    authRecordFail();
+    toast('❌ Mot de passe incorrect');
     document.getElementById('params-pw-input').value = '';
     document.getElementById('params-pw-input').classList.add('shake');
     setTimeout(() => document.getElementById('params-pw-input').classList.remove('shake'), 400);
@@ -1372,14 +1409,9 @@ function getServiceDates(year, month) {
 
 function dateKey(d) { return d.toISOString().slice(0,10); }
 
-/* RGPD — Format Prénom + Initiale uniquement */
-function fmtName(prenom, initiale) {
-  return prenom + ' ' + initiale;  // ex: "Luc B."
-}
-
 function getMemberName(id) {
   const m = membres.find(x => x.id === id);
-  return m ? fmtName(m.prenom, m.initiale) : null;
+  return m ? m.prenom + ' ' + m.initiale : null;
 }
 
 function renderPlanning() {
@@ -1409,22 +1441,23 @@ function renderPlanning() {
 
     const rolesHtml = ROLES.map(r => {
       const mId = slots[r];
-      const mName = mId ? getMemberName(mId) : null;
+      const mId2 = mId ? membres.find(x=>x.id===mId) : null;
+      const mName = mId2 ? mId2.prenom + ' ' + mId2.initiale : null;
       const color = ROLE_COLORS[r] || '#999';
+      // Astérisque si participation XLSX
+      const xlsxStat = mId2 ? getXlsxDispo(mId2, dateKey) : null;
+      const xlsxNote = mId2 ? getXlsxNote(mId2, dateKey) : null;
+      const partStar = xlsxStat === 'Participation' ? '<span title="' + (xlsxNote||'Autre participation') + '" style="color:#B45309;font-weight:800;cursor:help"> *</span>' : '';
       return `<div class="role-row">
         <span class="role-name"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:5px"></span>${r}</span>
-        ${mName ? `<span class="role-assigned">${mName}</span>` : '<span class="role-empty">Non attribué</span>'}
+        ${mName ? `<span class="role-assigned">${mName}${partStar}</span>` : '<span class="role-empty">Non attribué</span>'}
       </div>`;
     }).join('');
 
-    const rappelCls = isAdmin ? 'btn-rappel-service' : 'btn-rappel-service disabled-lambda';
     return `<div class="service-card ${isSam?'samedi':''} ${hasAbsence?'absent-flag':''}">
       <div class="service-date">${dayLabel}</div>
       <div class="service-type">${isSam?'🟡 Samedi':'🔵 Mardi'} · ${heure} ${hasAbsence?'· <span style="color:var(--danger)">⚠️ Absence signalée</span>':''}</div>
       ${rolesHtml}
-      <button class="${rappelCls}" data-rappel-date="${key}">
-        📱 Rappel services
-      </button>
     </div>`;
   }).join('');
 }
@@ -1536,12 +1569,16 @@ function updateAdminVisibility() {
 ══════════════════════════════════════════════════════════ */
 function populateMemberSelect() {
   const sel = document.getElementById('dispo-member-select');
-  if (!sel) return;
+  if (!sel) return; // Tab dispo remplacé par Google Form
   sel.innerHTML = '<option value="">— Sélectionnez votre nom —</option>' +
-    membres.filter(m => m.actif)
-      .sort((a,b) => a.prenom.localeCompare(b.prenom))
-      .map(m => `<option value="${m.id}">${fmtName(m.prenom, m.initiale)}</option>`)
-      .join('');
+    membres.filter(m=>m.actif).map(m => `<option value="${m.id}">${m.prenom} ${m.initiale}</option>`).join('');
+  // Absence date select
+  const absSel = document.getElementById('absence-date-select');
+  if (absSel) {
+    const futureDates = getAllFutureDates();
+    absSel.innerHTML = '<option value="">— Date —</option>' +
+      futureDates.map(d => `<option value="${dateKey(d)}">${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}</option>`).join('');
+  }
 }
 
 function getAllFutureDates() {
@@ -1555,129 +1592,46 @@ function getAllFutureDates() {
   return dates.slice(0, 20);
 }
 
-
-/* ══════════════════════════════════════════════════════════
-   DISPONIBILITÉS — Logique "indisponibilités seulement"
-   Par défaut tous disponibles — cocher = indisponible
-══════════════════════════════════════════════════════════ */
-
-/** Dates de service pour les 3 prochains mois (à partir du mois suivant) */
-function getDispoMonths() {
-  const now = new Date();
-  const months = [];
-  for (let delta = 1; delta <= 3; delta++) {
-    let y = now.getFullYear(), m = now.getMonth() + delta;
-    if (m > 11) { m -= 12; y++; }
-    const dates = getServiceDates(y, m);
-    if (dates.length) months.push({ year:y, month:m, dates });
-  }
-  return months;
-}
-
-/** Rend le formulaire d'indisponibilités pour un membre */
-function renderDispoFormNative(mId) {
-  const container = document.getElementById('dispo-dates-container');
-  if (!container) return;
-  const months = getDispoMonths();
-  if (!months.length) {
-    container.innerHTML = '<p style="color:var(--text-xs);text-align:center;padding:20px">Aucune date de service à venir</p>';
-    return;
-  }
-  let html = '';
-  months.forEach(({ year, month, dates }) => {
-    html += `<div class="dispo-month-label">${MONTHS[month]} ${year}</div>`;
-    dates.forEach(d => {
-      const key = mId + '_' + dateKey(d);
-      const isIndisp = dispos[key] === false; // false = indisponible
-      const isSam = d.getDay() === 6;
-      html += `<div class="dispo-row">
-        <div class="dispo-row-info">
-          <div class="dispo-row-date">${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} ${year}</div>
-          <div class="dispo-row-type">${isSam ? '🟡 Samedi · 16h30' : '🔵 Mardi · 19h00'}</div>
-        </div>
-        <button class="dispo-indisp-btn ${isIndisp ? 'checked' : ''}"
-          data-dispo-key="${key}"
-          data-date-key="${dateKey(d)}"
-          title="${isIndisp ? 'Indisponible — cliquez pour disponible' : 'Disponible — cliquez pour indisponible'}">
-          ${isIndisp ? 'Indisponible' : 'Disponible'}
-        </button>
-      </div>`;
-    });
-  });
-  container.innerHTML = html;
-}
-
-/** Toggle indisponibilité : false = indisponible / undefined (ou absent) = disponible */
-function toggleDispoNative(key, btn) {
-  const cur = dispos[key];
-  if (cur === false) {
-    // Était indisponible → devient disponible
-    delete dispos[key];
-    btn.classList.remove('checked');
-    btn.textContent = 'Disponible';
-    btn.title = 'Disponible — cliquez pour indisponible';
-  } else {
-    // Était disponible → devient indisponible
-    dispos[key] = false;
-    btn.classList.add('checked');
-    btn.textContent = 'Indisponible';
-    btn.title = 'Indisponible — cliquez pour disponible';
-  }
-}
-
-
 function checkDispoWindow() {
-  // Admin → toujours accès
-  // Lambda → accès du 20 au 28 seulement
-  const settings  = ls('settings', {});
-  const start     = parseInt(settings.windowStart || 20);
-  const end       = parseInt(settings.windowEnd   || 28);
-  const day       = new Date().getDate();
-  const inWindow  = isAdmin || (day >= start && day <= end);
+  if (!document.getElementById('dispo-form-wrap')) return; // Tab dispo remplacé par Google Form
+  const settings = ls('settings',{});
+  const start = parseInt(settings.windowStart || 20);
+  const end   = parseInt(settings.windowEnd   || 30);
+  const day   = new Date().getDate();
+  const inWindow = isAdmin || (day >= start && day <= end);
 
-  const warning   = document.getElementById('dispo-window-warning');
-  const formWrap  = document.getElementById('dispo-form-wrap');
-  if (!warning || !formWrap) return;
+  // Réinitialise les éléments (onMemberSelect les affichera selon sélection)
+  document.getElementById('dispo-form-wrap').style.display = 'none';
+  document.getElementById('dispo-window-warning').style.display = inWindow ? 'none' : 'block';
 
-  if (inWindow) {
-    warning.style.display  = 'none';
-    // Le formulaire est affiché par onMemberSelect() quand un membre est choisi
-  } else {
-    warning.style.display  = 'block';
-    formWrap.style.display = 'none';
-    const nextStart = new Date();
-    nextStart.setDate(start);
-    if (nextStart <= new Date()) nextStart.setMonth(nextStart.getMonth() + 1);
-    const el = document.getElementById('next-window-msg');
-    if (el) el.textContent =
+  if (!inWindow) {
+    const nextStart = new Date(); nextStart.setDate(start);
+    if (nextStart < new Date()) nextStart.setMonth(nextStart.getMonth()+1);
+    document.getElementById('next-window-msg').textContent =
       `Prochaine ouverture : le ${start} ${MONTHS[nextStart.getMonth()]} ${nextStart.getFullYear()}`;
   }
 }
 
 function onMemberSelect() {
-  const sel = document.getElementById('dispo-member-select');
-  if (!sel) return;
-  const mId = parseInt(sel.value);
-  const formWrap = document.getElementById('dispo-form-wrap');
-  if (!formWrap) return;
+  if (!document.getElementById('dispo-member-select')) return; // Tab dispo remplacé par Google Form
+  const mId = parseInt(document.getElementById('dispo-member-select').value);
+  if (!mId) { document.getElementById('dispo-form-wrap').style.display = 'none'; return; }
 
-  if (!mId) { formWrap.style.display = 'none'; return; }
-
-  const settings  = ls('settings', {});
-  const start     = parseInt(settings.windowStart || 20);
-  const end       = parseInt(settings.windowEnd   || 28);
-  const day       = new Date().getDate();
-  const inWindow  = isAdmin || (day >= start && day <= end);
+  const settings = ls('settings',{});
+  const start = parseInt(settings.windowStart || 20);
+  const end   = parseInt(settings.windowEnd   || 30);
+  const day   = new Date().getDate();
+  const inWindow = isAdmin || (day >= start && day <= end);
 
   if (!inWindow) {
-    formWrap.style.display = 'none';
+    document.getElementById('dispo-form-wrap').style.display = 'none';
     document.getElementById('dispo-window-warning').style.display = 'block';
     return;
   }
 
   document.getElementById('dispo-window-warning').style.display = 'none';
-  formWrap.style.display = 'block';
-  renderDispoFormNative(mId);
+  document.getElementById('dispo-form-wrap').style.display = 'block';
+  renderDispoForm(mId);
 }
 
 function renderDispoForm(mId) {
@@ -1692,7 +1646,7 @@ function renderDispoForm(mId) {
         <div class="dispo-date">${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}</div>
         <div class="dispo-day">${isSam ? '🟡 Samedi · 16h30' : '🔵 Mardi · 19h00'}</div>
       </div>
-      <button class="toggle ${val?'on':''}" id="tog_${key}" data-dispo-key="${key}" title="${val?'Disponible':'Indisponible'}"></button>
+      <button class="toggle ${val?'on':''}" id="tog_${key}" onclick="toggleDispo('${key}',this)" title="${val?'Disponible':'Indisponible'}"></button>
     </div>`;
   }).join('');
 }
@@ -1706,22 +1660,21 @@ function toggleDispo(key, btn) {
 async function saveDispo() {
   const mId = parseInt(document.getElementById('dispo-member-select').value);
   if (!mId) { toast('⚠️ Sélectionnez votre nom'); return; }
-
-  // Sauvegarder uniquement les indisponibilités (clés avec value === false)
   lw('dispos', dispos);
 
+  // Récupérer prénom et nom pour le Sheets de suivi
   const membre = membres.find(m => m.id === mId);
   const prenom = membre ? membre.prenom   : '';
   const nom    = membre ? membre.initiale : '';
 
   setSyncStatus('loading', '🔄 Envoi en cours…');
-  const ok = await pushToDrive({ action:'saveDispo', dispos, membreId:mId, prenom, nom });
+  const ok = await pushToDrive({ action:'saveDispo', dispos, membreId: mId, prenom, nom });
   if (ok) {
-    setSyncStatus('ok', '✅ Disponibilités enregistrées sur Drive');
+    setSyncStatus('ok','✅ Disponibilités enregistrées sur Drive');
     toast('✅ Disponibilités enregistrées !');
-    addNotif('✅ Disponibilités envoyées', `Indisponibilités de ${prenom} ${nom} sauvegardées.`);
+    addNotif('✅ Disponibilités envoyées', 'Vos disponibilités ont été sauvegardées sur Google Drive.');
   } else {
-    setSyncStatus('err', '❌ Sauvegarde locale uniquement');
+    setSyncStatus('err', '❌ Échec envoi Drive — données sauvegardées localement');
     toast('⚠️ Sauvegardé localement — vérifiez la connexion Drive');
   }
 }
@@ -1753,10 +1706,8 @@ async function declareAbsence() {
 async function checkAdmin() {
   const pw = document.getElementById('admin-pw-input').value;
   if (!pw) { toast('⚠️ Saisissez votre mot de passe'); return; }
-  if (!authCheckLock()) return;
-  const hash = await deriveAdminKey(pw);
+  const hash = await sha256(pw);
   if (isAdminHash(hash)) {
-    authRecordSuccess();
     isAdmin = true;
     document.getElementById('attrib-locked').style.display = 'none';
     document.getElementById('attrib-admin').style.display  = 'block';
@@ -1769,7 +1720,7 @@ async function checkAdmin() {
     renderMembers();
     toast('🔑 Mode admin activé');
   } else {
-    authRecordFail();
+    toast('❌ Mot de passe incorrect');
     document.getElementById('admin-pw-input').value = '';
     document.getElementById('admin-pw-input').classList.add('shake');
     setTimeout(()=>document.getElementById('admin-pw-input').classList.remove('shake'),400);
@@ -1802,7 +1753,7 @@ function renderAttribChips() {
   wrap.innerHTML = futureDates.map(d => {
     const key = dateKey(d);
     const isSam = d.getDay() === 6;
-    return `<div class="date-chip ${key===selectedAttribDate?'active':''}" data-key="${key}">
+    return `<div class="date-chip ${key===selectedAttribDate?'active':''}" onclick="selectAttribDate('${key}', this)">
       ${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}<br>
       <small style="font-size:10px">${isSam?'Samedi':'Mardi'}</small>
     </div>`;
@@ -1827,15 +1778,20 @@ function renderDispoSummary(dateKey) {
   if (!wrap) return;
   const actifs = membres.filter(m => m.actif);
   let nbDispo = 0, nbIndispo = 0, nbPasRepondu = 0, nbAbsent = 0;
+  let nbParticip = 0;
   actifs.forEach(m => {
     const isAbsent = absences.find(a => a.membreId === m.id && a.date === dateKey);
+    const xlsxVal = getXlsxDispo(m, dateKey);
     const val = dispos[m.id+'_'+dateKey];
     if (isAbsent) nbAbsent++;
-    else if (val === false) nbIndispo++;
-    else nbDispo++;  // undefined = disponible par défaut
+    else if (xlsxVal === 'Participation') nbParticip++;
+    else if (xlsxVal === 'Disponible' || val === true) nbDispo++;
+    else if (xlsxVal === 'Indisponible' || val === false) nbIndispo++;
+    else nbPasRepondu++;
   });
   wrap.innerHTML =
     `<span class="badge badge-green">✅ ${nbDispo} dispo</span>` +
+    `<span class="badge" style="background:#FFF3E0;color:#B45309">🟠 ${nbParticip} participation</span>` +
     `<span class="badge badge-red">⛔ ${nbIndispo} indispo</span>` +
     `<span class="badge badge-warn">❓ ${nbPasRepondu} sans réponse</span>` +
     (nbAbsent ? `<span class="badge badge-red">🚫 ${nbAbsent} absent(s)</span>` : '');
@@ -1864,7 +1820,7 @@ function renderAttribSlots(dateKey) {
     // Trouver le meilleur remplaçant (dispo explicite === true, non absent, le moins utilisé)
     const replacement = isConflict ? membres.filter(m =>
       m.actif && m.roles.includes(role) && m.id !== assignedId &&
-      dispos[m.id+'_'+dateKey] !== false &&
+      dispos[m.id+'_'+dateKey] === true &&
       !absences.find(a => a.membreId === m.id && a.date === dateKey) &&
       !Object.values(slots).includes(m.id)
     ).sort((a,b) => (usageCount[a.id]||0) - (usageCount[b.id]||0))[0] : null;
@@ -1876,30 +1832,42 @@ function renderAttribSlots(dateKey) {
     // 4. 🚫 Absents — rouges
     const eligibles = membres.filter(m => m.actif && m.roles.includes(role));
     const sorted_elig = [...eligibles].sort((a, b) => {
+      const xlsxA = getXlsxDispo(a, dateKey);
+      const xlsxB = getXlsxDispo(b, dateKey);
       const dispoA = dispos[a.id+'_'+dateKey];
       const dispoB = dispos[b.id+'_'+dateKey];
       const absA = absences.find(x=>x.membreId===a.id&&x.date===dateKey);
       const absB = absences.find(x=>x.membreId===b.id&&x.date===dateKey);
-      const scoreA = absA ? 3 : dispoA === false ? 2 : dispoA === undefined ? 1 : 0;
-      const scoreB = absB ? 3 : dispoB === false ? 2 : dispoB === undefined ? 1 : 0;
-      if (scoreA !== scoreB) return scoreA - scoreB;
-      // À score égal, le moins utilisé en premier
+      // Score : 0=dispo, 1=participation, 2=sans réponse, 3=indispo, 4=absent
+      const scoreOf = (m, xlsx, dispo, abs) => {
+        if (abs) return 4;
+        if (xlsx === 'Indisponible' || dispo === false) return 3;
+        if (!xlsx && dispo === undefined) return 2;
+        if (xlsx === 'Participation') return 1;
+        return 0; // Disponible
+      };
+      const sA = scoreOf(a, xlsxA, dispoA, absA);
+      const sB = scoreOf(b, xlsxB, dispoB, absB);
+      if (sA !== sB) return sA - sB;
       return (usageCount[a.id]||0) - (usageCount[b.id]||0);
     });
 
     const opts = `<option value="">— Non attribué —</option>` +
       sorted_elig.map(m => {
-        const mAbsent   = absences.find(a => a.membreId === m.id && a.date === dateKey);
-        const mDispo    = dispos[m.id+'_'+dateKey];
-        const mIndispo  = mDispo === false;
-        const mPasRepondu = mDispo === undefined;
-        const usage     = usageCount[m.id] || 0;
+        const mAbsent  = absences.find(a => a.membreId === m.id && a.date === dateKey);
+        const xlsxVal  = getXlsxDispo(m, dateKey);
+        const mDispo   = dispos[m.id+'_'+dateKey];
+        const usage    = usageCount[m.id] || 0;
+        const note     = getXlsxNote(m, dateKey);
 
         let suffix, color;
-        if (mAbsent)       { suffix = ' 🚫 Absent';         color = '#E53E3E'; }
-        else if (mIndispo) { suffix = ' ⛔ Indisponible';    color = '#aaa'; }
-        else if (mPasRepondu) { suffix = ' ❓ Pas de réponse'; color = '#B0B0B0'; }
-        else               { suffix = ` ✅ (${usage} svc)`;  color = 'inherit'; }
+        if (mAbsent)                         { suffix = ' 🚫 Absent';                                       color = '#E53E3E'; }
+        else if (xlsxVal === 'Indisponible'
+               || mDispo === false)          { suffix = ' ⛔ Indisponible';                                  color = '#aaa'; }
+        else if (xlsxVal === 'Participation'){ suffix = ` 🟠* Participation${note?' — '+note:''}`; color = '#B45309'; }
+        else if (xlsxVal === 'Disponible'
+               || mDispo === true)           { suffix = ` ✅ (${usage} svc)`;                                color = 'inherit'; }
+        else                                 { suffix = ' ❓ Pas de réponse';                                 color = '#B0B0B0'; }
 
         const label = m.prenom + ' ' + m.initiale + suffix;
         return `<option value="${m.id}" ${assignedId==m.id?'selected':''}
@@ -1910,7 +1878,7 @@ function renderAttribSlots(dateKey) {
     const conflictBadge = isConflict ? `
       <div class="conflict-badge">
         🚫 ${assignedMember?.prenom||'?'} a signalé son absence
-        ${replacement ? `<button class="replace-btn" data-dk="${dateKey}" data-role="${role}" data-mid="${replacement.id}">
+        ${replacement ? `<button class="replace-btn" onclick="applyReplacement('${dateKey}','${role}',${replacement.id})">
           Remplacer par ${replacement.prenom} ${replacement.initiale} ✅</button>` : '<span style="color:var(--text-xs);font-size:11px">Aucun remplaçant dispo</span>'}
       </div>` : '';
 
@@ -1980,13 +1948,27 @@ function autoAssign() {
   if (!planning[selectedAttribDate]) planning[selectedAttribDate] = {};
   ROLES.forEach(role => {
     if (planning[selectedAttribDate][role]) return; // already assigned
-    // UNIQUEMENT les membres ayant explicitement répondu dispo === true
+    // Priorité : Disponible > Participation > sans réponse (jamais Indisponible ni Absent)
     const candidates = membres.filter(m =>
       m.actif && m.roles.includes(role) &&
-      dispos[m.id+'_'+selectedAttribDate] === true &&
       !absences.find(a => a.membreId === m.id && a.date === selectedAttribDate) &&
-      !Object.values(planning[selectedAttribDate]).includes(m.id) // not already used today
-    ).sort((a,b) => (usageCount[a.id]||0) - (usageCount[b.id]||0));
+      !Object.values(planning[selectedAttribDate]).includes(m.id) &&
+      (()=>{
+        const xv = getXlsxDispo(m, selectedAttribDate);
+        const lv = dispos[m.id+'_'+selectedAttribDate];
+        if (xv === 'Indisponible' || lv === false) return false; // bloqué
+        return true; // Disponible, Participation, ou sans réponse
+      })()
+    ).sort((a,b) => {
+      const xvA = getXlsxDispo(a, selectedAttribDate);
+      const xvB = getXlsxDispo(b, selectedAttribDate);
+      const lvA = dispos[a.id+'_'+selectedAttribDate];
+      const lvB = dispos[b.id+'_'+selectedAttribDate];
+      const pA = xvA==='Disponible'||lvA===true ? 0 : xvA==='Participation' ? 1 : 2;
+      const pB = xvB==='Disponible'||lvB===true ? 0 : xvB==='Participation' ? 1 : 2;
+      if (pA !== pB) return pA - pB;
+      return (usageCount[a.id]||0) - (usageCount[b.id]||0);
+    });
     if (candidates.length) {
       planning[selectedAttribDate][role] = candidates[0].id;
       usageCount[candidates[0].id] = (usageCount[candidates[0].id]||0) + 1;
@@ -2058,8 +2040,8 @@ function renderMembers() {
         <div class="member-roles">${rolesHtml}</div>
       </div>
       ${isAdmin ? `<div class="member-actions">
-        <button class="btn btn-outline btn-sm" data-edit-id="${m.id}">✏️</button>
-        <button class="btn btn-danger btn-sm" data-del-id="${m.id}">🗑️</button>
+        <button class="btn btn-outline btn-sm" onclick="editMember(${m.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteMember(${m.id})">🗑️</button>
       </div>` : ''}
     </div>`;
   }).join('') + `</div></div>`;
@@ -2462,7 +2444,7 @@ function saveSettings() {
 /* ══════════════════════════════════════════════════════════
    VUE HEBDOMADAIRE
 ══════════════════════════════════════════════════════════ */
-let currentView = 'list';
+let currentView = 'week';
 
 function setView(v, btn) {
   currentView = v;
@@ -2507,7 +2489,7 @@ function renderWeekView() {
 
   wrap.innerHTML = weeks.map((wk, wi) => {
     const isCurrentWeek = wi === currentWeekIdx;
-    let html = `<div style="margin-bottom:14px${isCurrentWeek ? ';outline:2px solid var(--accent);outline-offset:4px;border-radius:var(--radius);padding:2px' : ''}">
+    let html = `<div ${isCurrentWeek ? 'id="current-week-block"' : ''} style="margin-bottom:14px${isCurrentWeek ? ';outline:2px solid var(--accent);outline-offset:4px;border-radius:var(--radius);padding:2px' : ''}">
       <div style="font-size:11px;font-weight:700;color:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:flex;align-items:center;gap:6px">
         Semaine ${wi+1}
         ${isCurrentWeek ? '<span style="font-size:10px;background:var(--accent);color:#fff;padding:1px 8px;border-radius:10px;font-weight:800">📍 Cette semaine</span>' : ''}
@@ -2522,9 +2504,12 @@ function renderWeekView() {
           const rolesHtml = ROLES.map(r => {
             const mId = slots[r];
             const m = mId ? membres.find(x => x.id === mId) : null;
+            const wXlsx = m ? getXlsxDispo(m, key) : null;
+            const wNote = m ? getXlsxNote(m, key) : null;
+            const wStar = wXlsx === 'Participation' ? `<span title="${wNote||'Participation'}" style="color:#B45309;font-weight:800;cursor:help">*</span>` : '';
             return `<div class="week-role-row">
               <span class="week-role-name">${r.replace('Accueil - ','').replace('Perches - ','P.')}</span>
-              ${m ? `<span class="week-member-name">${m.prenom}</span>` : '<span class="week-empty">—</span>'}
+              ${m ? `<span class="week-member-name">${m.prenom}${wStar}</span>` : '<span class="week-empty">—</span>'}
             </div>`;
           }).join('');
           return `<div class="week-col">
@@ -2538,7 +2523,7 @@ function renderWeekView() {
 
     // Bouton Rappel sous la semaine courante
     if (isCurrentWeek) {
-      html += `<button class="week-rappel-btn" id="btn-rappel-services">📋 Rappel des services</button>`;
+      html += `<button class="week-rappel-btn" onclick="rappelServices()">📋 Rappel des services</button>`;
     }
 
     return html;
@@ -2686,7 +2671,7 @@ function initAttribFilters() {
   if (!bar) return;
   const groups = ['Tous', 'Audio/Vidéo', 'Perches', 'Estrade', 'Accueil'];
   bar.innerHTML = groups.map((g,i) =>
-    `<button class="role-filter-btn ${i===0?'active':''}" data-filter="${i===0?'':g}">${g}</button>`
+    `<button class="role-filter-btn ${i===0?'active':''}" onclick="filterAttrib('${i===0?'':g}',this)">${g}</button>`
   ).join('');
 }
 
@@ -2764,60 +2749,6 @@ function checkWeeklySummary() {
 /* ══════════════════════════════════════════════════════════
    RAPPEL DES SERVICES DU JOUR (copier-coller WhatsApp)
 ══════════════════════════════════════════════════════════ */
-
-/* ══════════════════════════════════════════════════════════
-   RAPPEL SERVICES — Ouverture WhatsApp avec message formaté
-   Admin uniquement (protégé par classe CSS côté lambda)
-══════════════════════════════════════════════════════════ */
-function envoyerRappelServices(dateStr) {
-  const slots = planning[dateStr] || {};
-  const d = new Date(dateStr + 'T12:00:00');
-  const isSam = d.getDay() === 6;
-  const heure = isSam ? '16h30' : '19h00';
-  const dayLabel = DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
-
-  // Construire la liste des services attribués
-  const lignes = ROLES
-    .map(role => {
-      const mId = slots[role];
-      const m   = mId ? membres.find(x => x.id === mId) : null;
-      const ico = ROLE_ICONS[role] || '🔹';
-      return m
-        ? `${ico} *${role}* → ${fmtName(m.prenom, m.initiale)}`
-        : null;
-    })
-    .filter(Boolean);
-
-  if (!lignes.length) {
-    toast('ℹ️ Aucun service attribué pour cette date');
-    return;
-  }
-
-  // Message WhatsApp formaté
-  let msg = '🎙️ *Rappel de services — Planning Sono & Accueil*\n';
-  msg += `📅 *${dayLabel} — ${heure}*\n\n`;
-  msg += 'Bonjour,\n\nVoici les services prévus :\n\n';
-  msg += lignes.join('\n');
-
-  // Absences signalées pour cette date
-  const dayAbs = absences.filter(a => a.date === dateStr);
-  if (dayAbs.length) {
-    msg += '\n\n🚫 *Absences signalées :*\n';
-    dayAbs.forEach(a => {
-      const m = membres.find(x => x.id === a.membreId);
-      msg += `  • ${m ? fmtName(m.prenom, m.initiale) : '?'}`;
-      if (a.raison) msg += ' — ' + a.raison;
-      msg += '\n';
-    });
-  }
-
-  msg += '\nMerci d'être présents et ponctuels ! 🙏';
-  msg += '\n— _Planning Sono & Accueil — BeluSoft-Tchapy_';
-
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-  toast('📱 Rappel WhatsApp ouvert');
-}
-
 function rappelServices() {
   const now   = new Date();
   const today = dateKey(now);
@@ -2925,44 +2856,6 @@ function exportData() {
   toast('📥 Données exportées');
 }
 
-
-/* ══════════════════════════════════════════════════════════
-   VALIDATION JSON — Phase 2.C
-   Empêche la corruption par un fichier malformé
-══════════════════════════════════════════════════════════ */
-function validateImportData(data) {
-  const errors = [];
-  if (data.membres !== undefined) {
-    if (!Array.isArray(data.membres)) {
-      errors.push('membres doit être un tableau');
-    } else {
-      data.membres.forEach((m, i) => {
-        if (typeof m.id !== 'number')
-          errors.push('membres['+i+'].id doit être un nombre');
-        if (typeof m.prenom !== 'string' || !m.prenom.trim())
-          errors.push('membres['+i+'].prenom manquant ou invalide');
-        if (!Array.isArray(m.roles))
-          errors.push('membres['+i+'].roles doit être un tableau');
-      });
-    }
-  }
-  if (data.planning !== undefined) {
-    if (typeof data.planning !== 'object' || Array.isArray(data.planning))
-      errors.push('planning doit être un objet');
-    else {
-      Object.keys(data.planning).forEach(dk => {
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(dk))
-          errors.push('planning: clé invalide "' + dk + '"');
-      });
-    }
-  }
-  if (data.dispos !== undefined && typeof data.dispos !== 'object')
-    errors.push('dispos doit être un objet');
-  if (data.absences !== undefined && !Array.isArray(data.absences))
-    errors.push('absences doit être un tableau');
-  return errors;
-}
-
 function importDataFile() { document.getElementById('import-file').click(); }
 function importData(e) {
   const file = e.target.files[0]; if (!file) return;
@@ -2970,12 +2863,6 @@ function importData(e) {
   reader.onload = ev => {
     try {
       const data = JSON.parse(ev.target.result);
-      const errors = validateImportData(data);
-      if (errors.length) {
-        toast('❌ Import invalide : ' + errors[0]);
-        console.error('[import validation]', errors);
-        return;
-      }
       if (data.membres) { membres = data.membres; lw('membres', membres); }
       if (data.dispos)  { dispos  = data.dispos;  lw('dispos',  dispos);  }
       if (data.planning){ planning= data.planning; lw('planning',planning);}
@@ -3007,27 +2894,6 @@ function toast(msg, dur=2800) {
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
-
-/* ══════════════════════════════════════════════════════════
-   PBKDF2 — Dérivation de mot de passe renforcée Phase 2.B
-   Sel fixe + 100 000 itérations — anti rainbow tables
-══════════════════════════════════════════════════════════ */
-const ADMIN_SALT = 'BeluSoftSono2026Congrégation';
-
-async function deriveAdminKey(password) {
-  const enc    = new TextEncoder();
-  const keyMat = await crypto.subtle.importKey(
-    'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
-  );
-  const bits = await crypto.subtle.deriveBits({
-    name:       'PBKDF2',
-    salt:       enc.encode(ADMIN_SALT),
-    iterations: 100_000,
-    hash:       'SHA-256',
-  }, keyMat, 256);
-  return [...new Uint8Array(bits)]
-    .map(b => b.toString(16).padStart(2,'0')).join('');
-}
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -3062,6 +2928,97 @@ self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>caches
   document.head.appendChild(link);
 })();
 
+
+/* ══════════════════════════════════════════════════════════
+   IMPORT XLSX — DISPONIBILITÉS (SheetJS)
+══════════════════════════════════════════════════════════ */
+function importXlsxFile() { document.getElementById('xlsx-import-file').click(); }
+
+function loadXlsxFile(e) {
+  const file = e.target.files[0]; if (!file) return;
+  if (typeof XLSX === 'undefined') {
+    toast('⚠️ Bibliothèque SheetJS non chargée — attendez quelques secondes');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const wb = XLSX.read(ev.target.result, { type:'binary' });
+      const MONTH_MAP = {
+        'mai':5,'juin':6,'juil.':7,'juil':7,'août':8,
+        'sept.':9,'sept':9,'oct.':10,'oct':10,'nov.':11,'nov':11,'déc.':12,'déc':12
+      };
+      function parseDate(header) {
+        const parts = header.trim().split(' ');
+        if (parts.length >= 3) {
+          const day = parseInt(parts[1]);
+          const month = MONTH_MAP[parts[2].toLowerCase()];
+          if (month && !isNaN(day)) return `2026-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        }
+        return null;
+      }
+      const newDispos = {};
+      const newNotes = {};
+      wb.SheetNames.forEach(sn => {
+        const ws = wb.Sheets[sn];
+        const rows = XLSX.utils.sheet_to_json(ws, { header:1, defval:'' });
+        if (!rows.length) return;
+        const headers = rows[0];
+        const dateCols = [];
+        const lastCol = headers.length - 1;
+        for (let c = 2; c < headers.length; c++) {
+          const h = headers[c];
+          if (h && h !== 'Participations') {
+            const d = parseDate(String(h));
+            if (d) dateCols.push({ c, d });
+          }
+        }
+        for (let r = 1; r < rows.length; r++) {
+          const row = rows[r];
+          let nom = row[1];
+          if (!nom) break;
+          nom = String(nom).trim();
+          // Mapping Frédérique → Frédéric
+          if (nom === 'Frédérique R.') nom = 'Frédéric R.';
+          const partNote = row[lastCol] ? String(row[lastCol]).trim() : null;
+          dateCols.forEach(({c, d}) => {
+            const val = String(row[c] || '').trim();
+            if (val) {
+              const key = nom + '_' + d;
+              newDispos[key] = val;
+              if (val === 'Participation' && partNote) newNotes[key] = partNote;
+            }
+          });
+        }
+      });
+      // Merger dans les constantes globales
+      Object.assign(XLSX_DISPOS, newDispos);
+      Object.assign(XLSX_PART_NOTES, newNotes);
+      const count = Object.keys(newDispos).length;
+      document.getElementById('xlsx-count').textContent = count + ' entrées importées';
+      renderPlanning();
+      if (selectedAttribDate) { renderAttribSlots(selectedAttribDate); renderDispoSummary(selectedAttribDate); }
+      toast(`✅ XLSX importé — ${count} disponibilités chargées`);
+    } catch(err) { toast('❌ Erreur lecture XLSX : ' + err.message); }
+  };
+  reader.readAsBinaryString(file);
+}
+
+function showXlsxPreview() {
+  const entries = Object.entries(XLSX_DISPOS);
+  if (!entries.length) { toast('ℹ️ Aucune donnée XLSX chargée'); return; }
+  const byStatus = { Disponible:0, Indisponible:0, Participation:0 };
+  entries.forEach(([,v]) => { byStatus[v] = (byStatus[v]||0)+1; });
+  const membres_set = new Set(entries.map(([k]) => k.split('_')[0]));
+  const msg = `Données XLSX chargées:\n\n` +
+    `📊 ${entries.length} entrées au total\n` +
+    `👥 ${membres_set.size} membres couverts\n\n` +
+    `✅ Disponible : ${byStatus.Disponible}\n` +
+    `🟠 Participation : ${byStatus.Participation}\n` +
+    `🔴 Indisponible : ${byStatus.Indisponible}`;
+  alert(msg);
+}
+
 /* ══════════════════════════════════════════════════════════
    DÉMARRAGE
 ══════════════════════════════════════════════════════════ */
@@ -3075,175 +3032,6 @@ window.addEventListener('resize', fixIOSHeight);
 window.addEventListener('orientationchange', () => setTimeout(fixIOSHeight, 300));
 
 document.addEventListener('DOMContentLoaded', init);
-
-/* ══════════════════════════════════════════════════════════
-   GESTIONNAIRES D'ÉVÉNEMENTS — addEventListener ONLY
-   0 handler inline dans le HTML — CSP A+ compliant
-   Planning Sono & Accueil V8 — BeluSoft-Tchapy © 2026
-══════════════════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', function() {
-
-  /* ── Header ── */
-  var btnNotifs = document.getElementById('btn-notifs');
-  if (btnNotifs) btnNotifs.addEventListener('click', showNotifications);
-  var btnTheme  = document.getElementById('btn-theme');
-  if (btnTheme)  btnTheme.addEventListener('click', toggleTheme);
-
-  /* ── PWA ── */
-  var btnInstall = document.getElementById('btn-install-pwa');
-  if (btnInstall) btnInstall.addEventListener('click', installPWA);
-  var btnCloseInstall = document.getElementById('btn-close-install');
-  if (btnCloseInstall) btnCloseInstall.addEventListener('click', function(){
-    document.getElementById('install-banner').style.display='none';
-  });
-
-  /* ── Navigation tabs ── */
-  document.querySelectorAll('.nav-btn[data-tab]').forEach(function(btn) {
-    btn.addEventListener('click', function(){ switchTab(this.dataset.tab, this); });
-  });
-
-  /* ── Planning ── */
-  var btnPrev = document.getElementById('btn-month-prev');
-  if (btnPrev) btnPrev.addEventListener('click', function(){ changeMonth(-1); });
-  var btnNext = document.getElementById('btn-month-next');
-  if (btnNext) btnNext.addEventListener('click', function(){ changeMonth(1); });
-  var btnExportPDF = document.getElementById('btn-export-pdf');
-  if (btnExportPDF) btnExportPDF.addEventListener('click', exportPDF);
-  var btnRappelServices = document.getElementById('btn-rappel-services');
-  if (btnRappelServices) btnRappelServices.addEventListener('click', rappelServices);
-  document.querySelectorAll('[data-view]').forEach(function(btn){
-    btn.addEventListener('click', function(){ setView(this.dataset.view, this); });
-  });
-
-  /* ── Disponibilités ── */
-  var dispoSel = document.getElementById('dispo-member-select');
-  if (dispoSel) dispoSel.addEventListener('change', onMemberSelect);
-  var myPlanSel = document.getElementById('myplan-member-select');
-  if (myPlanSel) myPlanSel.addEventListener('change', onMyPlanSelect);
-  var btnAbsence = document.getElementById('btn-declare-absence');
-  if (btnAbsence) btnAbsence.addEventListener('click', declareAbsence);
-  var btnSaveDispo = document.getElementById('btn-save-dispo');
-  if (btnSaveDispo) btnSaveDispo.addEventListener('click', saveDispo);
-
-  /* ── Attribution ── */
-  var adminPwInput = document.getElementById('admin-pw-input');
-  if (adminPwInput) adminPwInput.addEventListener('keydown', function(e){
-    if (e.key==='Enter') checkAdmin();
-  });
-  var btnCheckAdmin = document.getElementById('btn-check-admin');
-  if (btnCheckAdmin) btnCheckAdmin.addEventListener('click', checkAdmin);
-  var btnAutoAssign = document.getElementById('btn-auto-assign');
-  if (btnAutoAssign) btnAutoAssign.addEventListener('click', autoAssign);
-  var btnSaveAttrib = document.getElementById('btn-save-attribution');
-  if (btnSaveAttrib) btnSaveAttrib.addEventListener('click', saveAttribution);
-  var btnRemindAll  = document.getElementById('btn-remind-all');
-  if (btnRemindAll)  btnRemindAll.addEventListener('click', function(){ sendReminders('all'); });
-  var btnRemindWeek = document.getElementById('btn-remind-week');
-  if (btnRemindWeek) btnRemindWeek.addEventListener('click', function(){ sendReminders('week'); });
-  var btnRemindGroup = document.getElementById('btn-remind-group');
-  if (btnRemindGroup) btnRemindGroup.addEventListener('click', sendGroupReminder);
-  var btnAutoReminder = document.getElementById('btn-auto-reminder');
-  if (btnAutoReminder) btnAutoReminder.addEventListener('click', scheduleAutoReminder);
-  var btnExportCSV = document.getElementById('btn-export-csv');
-  if (btnExportCSV) btnExportCSV.addEventListener('click', exportCSV);
-
-  /* ── Membres ── */
-  var btnAddMember = document.getElementById('add-member-btn');
-  if (btnAddMember) btnAddMember.addEventListener('click', openAddMember);
-  var memberSearch = document.getElementById('member-search');
-  if (memberSearch) memberSearch.addEventListener('input', renderMembers);
-  var btnCancelMember = document.getElementById('btn-cancel-member');
-  if (btnCancelMember) btnCancelMember.addEventListener('click', function(){ closeModal('modal-member'); });
-  var btnSaveMember = document.getElementById('btn-save-member');
-  if (btnSaveMember) btnSaveMember.addEventListener('click', saveMember);
-
-  /* ── Stats ── */
-  var statsMonthSel = document.getElementById('stats-month-select');
-  if (statsMonthSel) statsMonthSel.addEventListener('change', renderStats);
-  var btnExportStats = document.getElementById('btn-export-stats');
-  if (btnExportStats) btnExportStats.addEventListener('click', exportStatsToSheets);
-
-  /* ── Paramètres ── */
-  var darkToggle = document.getElementById('dark-toggle');
-  if (darkToggle) darkToggle.addEventListener('change', toggleThemeCheck);
-  var remind7 = document.getElementById('remind7');
-  if (remind7)  remind7.addEventListener('change', saveSettings);
-  var remind1 = document.getElementById('remind1');
-  if (remind1)  remind1.addEventListener('change', saveSettings);
-  var btnSaveGas = document.getElementById('btn-save-gas');
-  if (btnSaveGas) btnSaveGas.addEventListener('click', saveGasUrl);
-  var btnTestGas = document.getElementById('btn-test-gas');
-  if (btnTestGas) btnTestGas.addEventListener('click', testGasUrl);
-  var btnSyncDrive = document.getElementById('btn-sync-drive');
-  if (btnSyncDrive) btnSyncDrive.addEventListener('click', syncFromDrive);
-  var notifPermBtn = document.getElementById('notif-perm-btn');
-  if (notifPermBtn) notifPermBtn.addEventListener('click', requestNotifPermission);
-  var btnAdminToggle = document.getElementById('admin-toggle-btn');
-  if (btnAdminToggle) btnAdminToggle.addEventListener('click', toggleAdmin);
-  var btnSaveSettings = document.getElementById('btn-save-settings');
-  if (btnSaveSettings) btnSaveSettings.addEventListener('click', saveSettings);
-  var btnWaInstr = document.getElementById('btn-wa-instructions');
-  if (btnWaInstr) btnWaInstr.addEventListener('click', openWaInstructions);
-  var btnExportData = document.getElementById('btn-export-data');
-  if (btnExportData) btnExportData.addEventListener('click', exportData);
-  var btnImportData = document.getElementById('btn-import-data');
-  if (btnImportData) btnImportData.addEventListener('click', importDataFile);
-  var btnResetData = document.getElementById('btn-reset-data');
-  if (btnResetData) btnResetData.addEventListener('click', resetData);
-  var importFile = document.getElementById('import-file');
-  if (importFile) importFile.addEventListener('change', importData);
-
-  /* ── Overlay mot de passe ── */
-  var paramsPwInput = document.getElementById('params-pw-input');
-  if (paramsPwInput) paramsPwInput.addEventListener('keydown', function(e){
-    if (e.key==='Enter') checkParamsPassword();
-  });
-  var btnClosePwOverlay = document.getElementById('btn-close-pw-overlay');
-  if (btnClosePwOverlay) btnClosePwOverlay.addEventListener('click', closeParamsPwOverlay);
-  var btnCheckParamsPw = document.getElementById('btn-check-params-pw');
-  if (btnCheckParamsPw) btnCheckParamsPw.addEventListener('click', checkParamsPassword);
-
-  /* ── Modals ── */
-  var btnCloseNotifs = document.getElementById('btn-close-notifs');
-  if (btnCloseNotifs) btnCloseNotifs.addEventListener('click', function(){ closeModal('modal-notifs'); });
-  var btnCloseRappel = document.getElementById('btn-close-rappel');
-  if (btnCloseRappel) btnCloseRappel.addEventListener('click', function(){ closeModal('modal-rappel'); });
-  var btnCopyRappel = document.getElementById('btn-copy-rappel');
-  if (btnCopyRappel) btnCopyRappel.addEventListener('click', copyRappel);
-  document.querySelectorAll('.modal-overlay').forEach(function(o){
-    o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('open'); });
-  });
-
-  /* ── Délégation pour éléments générés dynamiquement ── */
-  document.addEventListener('click', function(e) {
-    /* Filtres attribution */
-    var filterBtn = e.target.closest('.role-filter-btn[data-filter]');
-    if (filterBtn) { filterAttrib(filterBtn.dataset.filter, filterBtn); return; }
-    /* Date chip attribution */
-    var dateChip = e.target.closest('.date-chip[data-key]');
-    if (dateChip) { selectAttribDate(dateChip.dataset.key, dateChip); return; }
-    /* Bouton remplacement */
-    var replBtn = e.target.closest('.replace-btn[data-dk]');
-    if (replBtn) { applyReplacement(replBtn.dataset.dk, replBtn.dataset.role, parseInt(replBtn.dataset.mid)); return; }
-    /* Edit membre */
-    var editBtn = e.target.closest('[data-edit-id]');
-    if (editBtn) { editMember(parseInt(editBtn.dataset.editId)); return; }
-    /* Delete membre */
-    var delBtn = e.target.closest('[data-del-id]');
-    if (delBtn) { deleteMember(parseInt(delBtn.dataset.delId)); return; }
-    /* Toggle indisponibilité (nouveau système) */
-    const dispoBtn = e.target.closest('.dispo-indisp-btn[data-dispo-key]');
-    if (dispoBtn) { toggleDispoNative(dispoBtn.dataset.dispoKey, dispoBtn); return; }
-  });
-
-  /* Délégation change pour selects attribution */
-  document.addEventListener('change', function(e) {
-    var sel = e.target.closest('.attrib-select[data-role][data-date-key]');
-    if (sel) { updateSlot(sel.dataset.dateKey, sel.dataset.role, sel.value); return; }
-  });
-
-});
-
 </script>
 </body>
 </html>
