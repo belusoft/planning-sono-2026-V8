@@ -1445,8 +1445,8 @@ function renderPlanning() {
       const mName = mId2 ? mId2.prenom + ' ' + mId2.initiale : null;
       const color = ROLE_COLORS[r] || '#999';
       // Astérisque si participation XLSX
-      const xlsxStat = mId2 ? getXlsxDispo(mId2, dateKey) : null;
-      const xlsxNote = mId2 ? getXlsxNote(mId2, dateKey) : null;
+      const xlsxStat = mId2 ? getXlsxDispo(mId2, key) : null;
+      const xlsxNote = mId2 ? getXlsxNote(mId2, key) : null;
       const partStar = xlsxStat === 'Participation' ? '<span title="' + (xlsxNote||'Autre participation') + '" style="color:#B45309;font-weight:800;cursor:help"> *</span>' : '';
       return `<div class="role-row">
         <span class="role-name"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:5px"></span>${r}</span>
